@@ -20,11 +20,11 @@ public class FeedController {
     private static final Logger log = LoggerFactory.getLogger(FeedController.class);
 
     @Autowired
-    @Value("${rss.fda.recalls.url}")
+    @Value("${rss.fda.recalls.url:http://www.fda.gov/AboutFDA/ContactFDA/StayInformed/RSSFeeds/Recalls/rss.xml}")
     private String fdaRecallsRSSurl;
 
     @Autowired
-    @Value("${gl.api.xml2json.url}")
+    @Value("${gl.api.xml2json.url:http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&q=}")
     private String xml2JsonCnvrtrUrl;
 
     @RequestMapping("/feed")
@@ -40,6 +40,7 @@ public class FeedController {
         JsonNode node = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
+            log.info(xml2JsonCnvrtrUrl+fdaRecallsRSSurl);
             node = mapper.readTree(rest.getForObject(xml2JsonCnvrtrUrl + fdaRecallsRSSurl, String.class));
         } catch (IOException e) {
             log.error("Error receiving FDA recalls", e);
