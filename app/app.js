@@ -13,6 +13,15 @@ App = Ember.Application.extend({
   Resolver: Resolver
 });
 
+
+// This is called with the results from from FB.getLoginStatus().
+
+
+
+
 loadInitializers(App, config.modulePrefix);
+
+
+
 
 export default App;
