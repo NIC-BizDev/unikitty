@@ -45,6 +45,7 @@ public class DrugControllerTest {
     assertThat(HttpStatus.OK, is(drugResourceResponseEntity.getStatusCode()));
     assertThat(drugResourceResponseEntity.getBody(), is(drugResource));
   }
+  
 
   @Test
   public void testGetDrugNotFound() {
@@ -91,5 +92,5 @@ public class DrugControllerTest {
          }
        });
     assertThat( drug.search( "blah", 10, 0 ), is( res ));
-  }  
+  }
 }

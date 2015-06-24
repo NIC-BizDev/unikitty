@@ -1,0 +1,29 @@
+
+<!-- Large -->
+{{#if large}}
+<form role="search" action="/drug" method="get" >
+    <div class="form-group">
+        <label class="sr-only">Search MyFDA</label>
+        <div id="dashboard-search" class="input-group">
+          <input type="text" name="name" class="form-control drug-search input-lg" placeholder="Search drugs...">
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary input-lg"><i class="glyphicon glyphicon-search"></i> Search</button>
+            </span>
+        </div>
+        <p class="help-block">You will be able to save drug(s) in order to receive future safety alerts.</p>
+    </div>
+</form>
+{{else}}
+<!-- Small -->
+<form class="navbar-form navbar-left" role="search" action="/drug" method="get" >
+  <div class="form-group">
+    <label class="sr-only">Search MyFDA</label>
+    <div class="input-group">
+        <input type="text" name="name" class="form-control drug-search" placeholder="Search drugs...">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+      </span>
+    </div>
+  </div>
+</form>
+{{/if}}

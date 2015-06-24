@@ -34,7 +34,7 @@ public class EventController {
     @Autowired
     @Value("${fda.drug.event.url:https://api.fda.gov/drug/event.json}")
     private String fdaDrugEventUrl;
-    
+
     RestTemplate rest = new RestTemplate();
     HttpSlurper slurp = new HttpSlurper();
 
@@ -65,10 +65,10 @@ public class EventController {
       for ( String t : tSet ) {
         ArrayNode event = mapper.createArrayNode();
         event.add( t );
-        String query = 
+        String query =
           this.fdaDrugEventUrl +
           "?search=patient.drug.openfda.unii:" +
-          unii +
+          URLEncoder.encode( unii, StandardCharsets.UTF_8.name() ) +
           "+AND+patient.reaction.reactionmeddrapt:" +
           conv.convert( t ) +
           "&count=serious";

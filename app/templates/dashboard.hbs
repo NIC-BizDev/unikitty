@@ -5,18 +5,7 @@
             <div class="col-sm-8 col-sm-offset-2">
                 <div class="jumbotron text-center">
                     <p class="lead">Look up drug safety recalls and adverse effects:</p>
-                    <form role="search">
-                        <div class="form-group">
-                            <label class="sr-only">Search MyFDA</label>
-                            <div id="dashboard-search" class="input-group">
-                                <input type="text" class="form-control input-lg" placeholder="Search drugs..." />
-                                <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-primary input-lg"><i class="glyphicon glyphicon-search"></i> Search</button>
-                                </span>
-                            </div>
-                            <p class="help-block">You will be able to save drug(s) in order to receive future safety alerts.</p>
-                        </div>
-                    </form>
+                      {{autocomplete-search large=true}}
                 </div>
             </div>
         </div>
