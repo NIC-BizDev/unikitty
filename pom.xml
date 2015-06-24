@@ -197,7 +197,7 @@
                         </configuration>
                     </execution>
 
-                    <execution>
+                    <!-- execution>
                         <id>npm test</id>
                         <goals>
                             <goal>npm</goal>
@@ -205,7 +205,7 @@
                         <configuration>
                             <arguments>test</arguments>
                         </configuration>
-                    </execution>
+                    </execution -->
 
                     <execution>
                         <id>ember build</id>
