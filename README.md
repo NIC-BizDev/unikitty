@@ -16,7 +16,7 @@ This should start the application on port 8080. http://localhost:8080/
 
 
 ### Running the frontend only
-We use [emberjs](http://emberjs.com/) Nodejs and NPM must be installed
+[emberjs](http://emberjs.com/) is the framework of choice.
 
 1. Install emberjs cli `npm install -g ember-cli`
 2. Install npm packages `npm install`
