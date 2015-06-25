@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="demo" default="runtestsfirefox">
+	<taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="lib/ant-sahi.jar"/>
+	
+	
+	<target name="set_properties_firefox">
+    	<property name="scriptDir" value="C:/Users/mreyes/sahi_pro/userdata/scripts/"/>
+    	<property name="scriptName" value="myFDA/myFDA.sah"/>
+		<property name="browser" value="firefox"/>
+		<property name="sendemail" value="false"/>
+		<property name="emailtrigger" value="success,failure"/>
+		<property name="emailproperties" value="C:\Users\mreyes\sahi_pro\userdata\config\email.properties"/>
+		<property name="emailPasswordHidden" value="true"/>
+		<property name="baseURL" value="http://myfda.egov.com"/>
+		<property name="host" value="localhost"/>
+		<property name="port" value="9999"/>
+		<property name="singlesession" value="false"/>
+		<property name="threads" value="5"/>
+		<property name="failedSuite" value="myFDA/myFDA.sah"/>
+	</target>
+
+	<target name="runtestsfirefox" depends="set_properties_firefox">
+		<sahi suite="${scriptDir}${scriptName}"
+			browsertype="${browser}"
+			sendemail="${sendemail}"
+	        emailtrigger="${emailtrigger}"
+	        emailproperties="${emailproperties}"
+			emailPasswordHidden="${emailPasswordHidden}"
+			baseurl="${baseURL}"
+			sahihost="${host}"
+			sahiport="${port}"
+			failureproperty="sahi.failed.${browser}"
+			haltonfailure="false"
+			singlesession="${singlesession}"
+			threads="${threads}">
+		</sahi>
+		<antcall target="failsahifirefox"/>
+	</target>
+
+    <target name="failsahifirefox" depends="set_properties_firefox" if="sahi.failed.${browser}">
+        <fail message="Sahi tests failed on browser ${browser}!"/>
+    </target>		
+</project>
