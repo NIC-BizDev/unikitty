@@ -1,0 +1,3 @@
+_assertExists(_link("MyFDA"));
+_assertExists(_button("Log In with Facebook"));
+_assertExists(_heading2("Latest Drug Recalls"));
