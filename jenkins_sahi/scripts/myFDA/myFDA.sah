@@ -1,0 +1,13 @@
+
+/* --Objects Definitions Above-- */
+
+function searchDrug($Search_MyFDA){
+	_assertExists(_link("MyFDA"));
+	_setValue(_textbox("Search MyFDA"), $Search_MyFDA);
+	_click(_submit("btn btn-default"));
+}
+
+/* --Functions Above-- */
+
+searchDrug("Advil");
+
