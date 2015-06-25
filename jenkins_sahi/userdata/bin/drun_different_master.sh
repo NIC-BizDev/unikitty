@@ -56,7 +56,7 @@ export BROWSER=$3
 
 # Scripts will be distributed across all the nodes. The nodes may or may not include the Master machine
 # SET NODES=machine2:9999,machine3:9999,machine4:9999
-export NODES=machine2:9999
+export NODES=QALaptop1:9999
 
 export NODES_FILEPATH=
 
