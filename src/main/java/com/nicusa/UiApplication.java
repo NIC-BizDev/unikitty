@@ -1,5 +1,6 @@
 package com.nicusa;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -20,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,18 +32,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
-@PropertySources({
-    @PropertySource(value="file:${user.home}/.nic/unikitty.properties", ignoreResourceNotFound = true) })
 public class UiApplication {
     
   private static final Logger log = LoggerFactory.getLogger(UiApplication.class);
 
-  private static final String KEYSTORE_FILE = "keystoreFile";
-  private static final String KEYSTORE_ALIAS = "keystoreAlias";
-  private static final String KEYSTORE_PASSWORD = "keyPwd";
+  @Value("${keystore.file:}")
+  private String keystoreFile;
   
-  @Autowired
-  Environment env;
+  @Value("${keystore.pass:}")
+  private String keystorePassword;
+  
+  @Value("${keystore.type:}")
+  private String keystoreType;
+  
+  @Value("${keystore.alias:}")
+  private String keystoreAlias;
   
   
   public static void main(String[] args) {
@@ -61,15 +65,12 @@ public class UiApplication {
   public EmbeddedServletContainerCustomizer containerCustomizer() throws FileNotFoundException
   {
       String absoluteKeystoreFile = null;
-      String keyfileAlias = null;
-      String keyfilePassword = null;
-      
       try {
-          String absoluteKeystoreFileName = env.getProperty("absolute.file.keystore");
-          keyfileAlias = env.getProperty("keyfile.alias");
-          keyfilePassword = env.getProperty("keyfile.password");
-          
-          absoluteKeystoreFile = ResourceUtils.getFile(absoluteKeystoreFileName).getAbsolutePath();
+          if(keystoreFile != null && keystoreFile.length() > 0)
+          {
+              log.info("Absolute keystore file: "+keystoreFile);
+              absoluteKeystoreFile = ResourceUtils.getFile(keystoreFile).getAbsolutePath();
+          }
       } catch (Exception e)
       {
           log.warn("Keystore not defined ");
@@ -77,7 +78,7 @@ public class UiApplication {
   
 
       final TomcatConnectorCustomizer customizer = new SslTomcatConnectionCustomizer(
-          absoluteKeystoreFile, keyfilePassword, "PKCS12", keyfileAlias); 
+              absoluteKeystoreFile, keystorePassword, keystoreType, keystoreAlias); 
 
       return new EmbeddedServletContainerCustomizer() {
 
