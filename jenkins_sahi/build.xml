@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="demo" default="drun_different_master">
+    <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="lib/ant-sahi.jar"/>
+    <taskdef name="sahid" classname="in.co.sahi.ant.DAntRunner" classpath="lib/ant-sahi.jar"/>
+    <taskdef name="sahisync" classname="in.co.sahi.ant.DAntSync" classpath="lib/ant-sahi.jar"/>
+	<taskdef name="sahipull" classname="in.co.sahi.ant.DAntPull" classpath="lib/ant-sahi.jar"/>
+
+	<target name="set_timestamp">
+        <tstamp>
+            <format property="ts" pattern="yyyy_MM_dd_HH_mm_ss" locale="en, IN"/>
+        </tstamp>
+	</target>
+	
+	<target name="set_properties_common" depends="set_timestamp">
+    	<property name="scriptDir" value="C:/Users/mreyes/sahi_pro/userdata/scripts/"/>
+		<property name="masterhost" value="192.168.30.33"/>
+		<property name="masterport" value="9999"/>
+		<property name="runId" value="${ts}"/>
+	</target>	
+	
+    <target name="drun_different_master" depends="set_properties_common, set_timestamp">
+        <sequential>
+			<sahisync originFolder="${scriptDir}" destFolder="temp/scripts/staging" ignorePattern=".*(svn|copied).*">
+		    	<node host="${masterhost}" port="${masterport}"/>
+			</sahisync>
+			
+			<antcall target="drunfirefox"/>
+        </sequential>
+    </target>	
+	
+	<target name="set_properties_firefox" depends="set_properties_common">
+    	<property name="scriptName" value="myFDA/myFDA.sah"/>
+		<property name="browser" value="firefox"/>
+		<property name="sendemail" value="false"/>
+		<property name="emailtrigger" value="success,failure"/>
+		<property name="emailproperties" value="C:\Users\mreyes\sahi_pro\userdata\config\email.properties"/>
+		<property name="emailPasswordHidden" value="true"/>
+		<property name="baseURL" value="http://myfda.egov.com"/>
+		<property name="failedSuite" value="myFDA/myFDA.sah"/>
+	</target>
+
+    <target name="drunfirefox" depends="set_properties_firefox, set_timestamp">
+    	<sahid suite="temp/scripts/copied/${scriptName}"
+			sendEmail="${sendemail}"
+			emailtrigger="${emailtrigger}"
+			emailProperties="${emailproperties}"
+			emailPasswordHidden="${emailPasswordHidden}"
+			baseurl="${baseURL}"
+			sahihost="${masterhost}"
+			sahiport="${masterport}"
+			failureproperty="sahi.failed.${browser}"
+			haltonfailure="false"
+			originalSuitePath="temp/scripts/staging/${scriptName}"
+			browsertype="${browser}"
+			origScriptsPath="temp/scripts/staging/"
+			copiedScriptsPath="temp/scripts/copied"
+			runId="${runId}"
+			ignorePattern=".*(svn|copied).*">
+			<!-- Scripts will be distributed across all the nodes. The nodes may or may not include the Master machine -->
+			<node host="localhost" port="9999"/>
+    	</sahid>
+		<antcall target="failsahifirefox"/>
+    </target>
+
+    <target name="failsahifirefox" depends="set_properties_firefox" if="sahi.failed.${browser}">
+        <fail message="Sahi tests failed on browser ${browser}!"/>
+    </target>	
+</project>
