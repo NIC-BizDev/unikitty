@@ -1,24 +1,22 @@
 package com.nicusa.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.nicusa.service.AdverseEffectService;
 import com.nicusa.util.AdverseEffect;
 import com.nicusa.util.ApiKey;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -35,14 +32,18 @@ public class EventController {
 
   @Autowired
   ApiKey apiKey;
-
+  
   @Autowired
   @Value("${fda.drug.event.url:https://api.fda.gov/drug/event.json}")
   private String fdaDrugEventUrl;
 
+  @Autowired
+  AdverseEffectService adverseEffectService;
+
   RestTemplate rest = new RestTemplate();
 
   public Map<String,Long> getEventTerms ( String unii ) throws IOException {
+      apiKey = new ApiKey();
     String query = String.format(
         this.fdaDrugEventUrl + "?search=patient.drug.openfda.unii:%s&count=patient.reaction.reactionmeddrapt.exact",
         URLEncoder.encode( unii, StandardCharsets.UTF_8.name() )) +
@@ -62,6 +63,8 @@ public class EventController {
     return rv;
   }
 
+
+  
   @RequestMapping("/event")
   public String search(
       @RequestParam(value="unii", defaultValue="" ) String unii,
@@ -88,6 +91,7 @@ public class EventController {
       ef.setEffect( k );
       ef.setCount( terms.get( k ));
       ef.setTotal( max );
+      ef.setDescription( adverseEffectService.findEffectDescription(k));
       // TODO set description
       effects.add( ef );
     }

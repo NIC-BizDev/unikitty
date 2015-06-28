@@ -1,5 +1,8 @@
 package com.nicusa;
 
+import javax.persistence.SharedCacheMode;
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -11,18 +14,16 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.persistence.SharedCacheMode;
-import javax.sql.DataSource;
-import java.sql.SQLException;
 
 @Configuration
 @Profile("local")
+@EnableTransactionManagement
 public class PersistenceConfiguration {
 
   @Bean
-  public DataSource dataSource() throws SQLException {
+  public DataSource dataSource()  {
     EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
     return builder.setType(EmbeddedDatabaseType.HSQL).build();
   }
@@ -38,7 +39,9 @@ public class PersistenceConfiguration {
 
   @Bean
   public PlatformTransactionManager transactionManager() {
-    return new JpaTransactionManager();
+      JpaTransactionManager transactionManager = new JpaTransactionManager();
+      transactionManager.setEntityManagerFactory(entityManagerFactory().getObject() );
+    return transactionManager;
   }
 
 
@@ -48,7 +51,7 @@ public class PersistenceConfiguration {
   }
 
   @Bean
-  public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws SQLException {
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory()  {
     LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
     factory.setJpaVendorAdapter(vendorAdapter());
     factory.setSharedCacheMode(SharedCacheMode.NONE);
