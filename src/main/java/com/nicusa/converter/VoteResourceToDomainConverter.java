@@ -6,8 +6,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.nicusa.controller.SecurityController;
-import com.nicusa.domain.UserProfile;
+import com.nicusa.controller.VoteController;
 import com.nicusa.domain.Vote;
 import com.nicusa.resource.FeatureResource;
 import com.nicusa.resource.VoteResource;
@@ -20,21 +19,21 @@ public class VoteResourceToDomainConverter extends ResourceToDomainConverter<Vot
   @Autowired
   private FeatureResourceToDomainConverter featureConverter;
 
-  @Autowired
-  private SecurityController securityController;
-  
   @Override
   public Vote convert(VoteResource voteResource) {
-    Vote vote = new Vote();
+    Vote vote = entityManager.find(Vote.class, extractIdFromLink(VoteController.class,
+                                                                 voteResource, "getVote", Long.class));
+
+    if (vote == null) {
+      vote = new Vote();
+    }
+    
     vote.setLike(voteResource.getLike());
     
     FeatureResource featureResource = new FeatureResource();
-    featureResource.add(featureResource.getLink("feature").withRel("self"));
+    featureResource.add(voteResource.getLink("feature").withRel("self"));
     vote.setFeature(featureConverter.convert(featureResource));
     
-    UserProfile userProfile = entityManager.find(UserProfile.class, securityController.getAuthenticatedUserProfileId());
-    vote.setUserProfile(userProfile);
-
     return vote;
   }
 

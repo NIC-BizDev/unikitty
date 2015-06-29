@@ -6,6 +6,7 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Component;
 
+import com.nicusa.controller.FeatureController;
 import com.nicusa.domain.Feature;
 import com.nicusa.resource.FeatureResource;
 
@@ -17,11 +18,9 @@ public class FeatureResourceToDomainConverter extends ResourceToDomainConverter<
 
   @Override
   public Feature convert(FeatureResource featureResource) {
-    Feature feature = null;
-    /*
-      feature = entityManager.find(Feature.class, extractIdFromLink(FeatureController.class,
-        featureResource, "getFeature", Principal.class, Long.class));
-    */
+    Feature feature = entityManager.find(Feature.class, extractIdFromLink(FeatureController.class,
+                                                                          featureResource, "getFeature", Long.class));
+
     if (feature == null) {
       feature = new Feature();
     }

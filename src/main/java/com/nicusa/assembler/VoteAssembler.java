@@ -1,5 +1,6 @@
 package com.nicusa.assembler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,8 @@ import com.nicusa.resource.VoteResource;
 
 @Component
 public class VoteAssembler extends ResourceAssemblerSupport<Vote, VoteResource> {
+  @Autowired
+  private UserProfileAssembler userProfileAssembler;
   
   public VoteAssembler() {
     super(VoteController.class, VoteResource.class);
@@ -21,6 +24,9 @@ public class VoteAssembler extends ResourceAssemblerSupport<Vote, VoteResource> 
   public VoteResource toResource(Vote vote) {
     VoteResource voteResource = createResourceWithId(vote.getId(), vote);
     voteResource.setLike(vote.getLike());
+    if (vote.getUserProfile() != null) {
+      voteResource.setUserProfileResource(userProfileAssembler.toResource(vote.getUserProfile()));
+    }
     voteResource.add(linkTo(methodOn(FeatureController.class).getFeature(vote.getFeature().getId())).withRel("feature"));
     return voteResource;
   }
