@@ -11,9 +11,12 @@ public class FeatureResourceTest {
     @Test
     public void getRequestTextShouldReturnValuePassedInSetRequestText() {
         FeatureResource featureResource = new FeatureResource();
+        assertThat(featureResource.getTitle(), is(nullValue()));
         assertThat(featureResource.getRequestText(), is(nullValue()));
-        featureResource.setRequestText("Unikitty");
-        assertThat(featureResource.getRequestText(), is("Unikitty"));
+        featureResource.setTitle("Unikitty");
+        featureResource.setRequestText("Unikitty Request Text");
+        assertThat(featureResource.getTitle(), is("Unikitty"));
+        assertThat(featureResource.getRequestText(), is("Unikitty Request Text"));
     }
 
 }

@@ -5,7 +5,7 @@ import org.springframework.hateoas.ResourceSupport;
 public class VoteResource extends ResourceSupport {
 
   private Boolean like;
-  
+
   public Boolean getLike() {
     return like;
   }

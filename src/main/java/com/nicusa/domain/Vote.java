@@ -10,6 +10,7 @@ public class Vote {
   private Long id;
   private Boolean like;
   private UserProfile userProfile;
+  private Feature feature;
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -38,4 +39,12 @@ public class Vote {
     this.userProfile = userProfile;
   }
 
+  public Feature getFeature() {
+    return feature;
+  }
+
+  public void setFeature(Feature feature) {
+    this.feature = feature;
+  }
+  
 }

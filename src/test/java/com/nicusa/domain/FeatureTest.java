@@ -32,5 +32,12 @@ public class FeatureTest {
         feature.setRequestText("Unikitty");
         assertThat(feature.getRequestText(), is("Unikitty"));
     }
+    
+    @Test
+    public void getTitleShouldReturnValuePassedInSetTitle() {
+        assertThat(feature.getTitle(), is(nullValue()));
+        feature.setTitle("Unikitty");
+        assertThat(feature.getTitle(), is("Unikitty"));
+    }    
 
 }

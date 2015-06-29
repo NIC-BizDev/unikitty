@@ -9,9 +9,10 @@ public class Feature {
   public static final String SEQUENCE_NAME = "FEATURE_SEQUENCE";
   
   private Long id;
+  private String title;
   private String requestText;
   private Collection<Vote> votes;
-
+  
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @SequenceGenerator(name = SEQUENCE_NAME, allocationSize = 1)
@@ -21,6 +22,14 @@ public class Feature {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public String getRequestText() {
