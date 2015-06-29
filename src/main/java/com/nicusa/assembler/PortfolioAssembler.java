@@ -27,8 +27,10 @@ public class PortfolioAssembler extends ResourceAssemblerSupport<Portfolio, Port
     } else {
       portfolioResource = new PortfolioResource();
     }
+    portfolioResource.setName(portfolio.getName());
+    portfolioResource.set_id(portfolio.getId().toString());
     for (Drug drug : portfolio.getDrugs()) {
-      portfolioResource.add(linkTo(methodOn(DrugController.class).getDrug(drug.getId())).withRel("drugs"));
+      portfolioResource.add(linkTo(methodOn(DrugController.class).get(drug.getId())).withRel("drugs"));
     }
     return portfolioResource;
   }

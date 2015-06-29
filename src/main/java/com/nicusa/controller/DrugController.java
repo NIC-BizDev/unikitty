@@ -1,47 +1,40 @@
 package com.nicusa.controller;
 
-import com.nicusa.assembler.DrugAssembler;
-import com.nicusa.domain.Drug;
-import com.nicusa.resource.DrugResource;
-import com.nicusa.util.ApiKey;
-import com.nicusa.util.AutocompleteFilter;
-import com.nicusa.util.DrugSearchResult;
-import com.nicusa.util.FieldFinder;
-import com.nicusa.util.HttpSlurper;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.nicusa.assembler.DrugAssembler;
+import com.nicusa.converter.DrugResourceToDomainConverter;
+import com.nicusa.domain.Drug;
+import com.nicusa.resource.DrugResource;
+import com.nicusa.resource.UserProfileResource;
+import com.nicusa.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class DrugController {
   private static final Logger log = LoggerFactory.getLogger(DrugController.class);
+
   RestTemplate rest = new RestTemplate();
   HttpSlurper slurp = new HttpSlurper();
 
@@ -63,9 +56,45 @@ public class DrugController {
   @Autowired
   private DrugAssembler drugAssembler;
 
+  @Autowired
+  private DrugResourceToDomainConverter drugResourceToDomainConverter;
+
+  @Autowired
+  private SecurityController securityController;
+
+  @Transactional
   @ResponseBody
-  @RequestMapping(value = "/drug/{id}", method = RequestMethod.GET, produces = "application/hal+json")
-  public ResponseEntity<DrugResource> getDrug(@PathVariable("id") Long id) {
+  @RequestMapping(value = "/drug", method = RequestMethod.POST, consumes = "application/json")
+  public ResponseEntity<?> create(@RequestBody DrugResource drugResource) {
+    Long loggedInUserProfileId = securityController.getAuthenticatedUserProfileId();
+  if (loggedInUserProfileId != null && loggedInUserProfileId != UserProfileResource.ANONYMOUS_USER_PROFILE_ID) {
+      Drug drug = drugResourceToDomainConverter.convert(drugResource);
+      entityManager.persist(drug);
+      HttpHeaders httpHeaders = new HttpHeaders();
+      httpHeaders.setLocation(linkTo(methodOn(DrugController.class).get(drug.getId())).toUri());
+      return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+    } else {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @Transactional
+  @ResponseBody
+  @RequestMapping(value = "/drug/{id}", method = RequestMethod.DELETE, consumes = "application/json")
+  public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+    Long loggedInUserProfileId = securityController.getAuthenticatedUserProfileId();
+    if(loggedInUserProfileId != null && loggedInUserProfileId != UserProfileResource.ANONYMOUS_USER_PROFILE_ID) {
+      Drug drug = entityManager.find(Drug.class, id);
+      entityManager.remove(drug);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @ResponseBody
+  @RequestMapping(value = "/drug/{id}", method = RequestMethod.GET, produces = "application/json")
+  public ResponseEntity<DrugResource> get(@PathVariable("id") Long id) {
     Drug drug = entityManager.find(Drug.class, id);
     if (drug == null) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -232,6 +261,7 @@ public class DrugController {
   }
 
   @RequestMapping("/autocomplete")
+  //TODO - Move this to the client side.
   public String autocomplete(
     @RequestParam(value = "name", defaultValue = "") String name) throws IOException {
     if (name == null) {

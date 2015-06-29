@@ -1,70 +1,10 @@
 <section id="drug-details" class="section">
 	<div class="container">
-		<div class="page-header"><h2><!-- WE NEED THE DRUG NAME! -->{{drug.name}}</h2></div>
-		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation" class="active"><a href="#drug-recalls" aria-controls="home" role="tab" data-toggle="tab">Recalls</a></li>
-			<li role="presentation"><a href="#drug-effects" aria-controls="profile" role="tab" data-toggle="tab">Adverse Effects</a></li>
-		</ul>
-
-		<div class="tab-content">
-			<div role="tabpanel" class="tab-pane fade in active" id="drug-recalls">
-				<h3 class="h2">Drug Recalls</h3>
-				<!-- <form role="search">
-					<div class="form-group">
-						<label class="sr-only">Search Recalls</label>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search recalls..." />
-							<span class="input-group-btn">
-								<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
-							</span>
-						</div>
-					</div>
-				</form> -->
-				{{#each model.recalls.results as |recall|}}
-                    <div class="recall">
-	                    <div class="row">
-		                    <div class="col-sm-8 col-md-9">
-		    					<h3 class="title-recall"><span class="label label-success">{{recall.status}}</span>Recall Number: {{recall.recall_number}}</h3>
-		    					<p><strong class="prepend">Product Description:</strong> {{recall.product_description}}</p>
-		    					<p><strong class="prepend">Recall Reason:</strong> {{recall.reason_for_recall}}</p>
-		    					<p><strong class="prepend">Initiation Date:</strong> {{format-date recall.recall_initiation_date}} &bull; <strong class="prepend">Report Date:</strong> {{format-date recall.report_date}}</p>
-		    					<p><strong class="prepend">Reporting Firm:</strong> {{recall.recalling_firm}}</p>
-		                    </div>
-		                    <div class="col-sm-4 col-md-3 text-center">
-			                    <h4>Recall Distribution:</h4>
-			                    {{us-maps}}
-		                    </div>
-	                    </div>
-    					<hr />
-    				</div>
-				{{/each}}
-			</div>
-			<div role="tabpanel" class="tab-pane fade" id="drug-effects">
-				<h3 class="h2">Adverse Effects</h3>
-
-				<!-- male {{ model.genderCount.male.count }}
-				female {{ model.genderCount.female.count }}
-				total {{ model.genderCount.total }}
-				male pct {{ model.genderCount.male.pct}}
-				female pct {{ model.genderCount.female.pct }} -->
-
-				<!-- <form role="search">
-					<div class="form-group">
-						<label class="sr-only">Search Effects</label>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search recalls..." />
-							<span class="input-group-btn">
-								<button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
-							</span>
-						</div>
-					</div>
-				</form> -->
-				<div class="panel-group" id="effects" role="tablist" aria-multiselectable="true">
-				{{#each model.effects as |effect|}}
-					{{effect-accordion action="loadEffectData" drugId=params.drug_id name=effect.effect count=effect.count description=effect.description percent=effect.percent malePercent=model.genderCount.male.pct femalePercent=model.genderCount.female.pct}}
-				{{/each}}
-				</div>
-			</div>
-		</div>
+		<div class="page-header"><h2>{{drugName}}</h2></div>
+		{{#if model.recalls.results}}
+			{{partial "drug/has-recalls"}}
+		{{else}}
+			{{partial "drug/has-no-recalls"}}
+		{{/if}}
 	</div>
 </section>

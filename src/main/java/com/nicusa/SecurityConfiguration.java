@@ -58,15 +58,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       .passwordEncoder(passwordEncoder());
   }
 
+
   @Override
   public void configure(WebSecurity web) {
     web
       .ignoring()
       .antMatchers("/**/*.css", "/**/*.png", "/**/*.gif", "/**/*.jpg", "/**/*.js");
+
   }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http
+
+    http.csrf().disable()
       .formLogin()
       .loginPage("/signin")
       .loginProcessingUrl("/signin/authenticate")
@@ -77,7 +81,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       .deleteCookies("JSESSIONID")
       .and()
       .authorizeRequests()
-      .antMatchers("/signin/**", "/error", "/signup/**", "/autocomplete", "/drug/**", "/enforcement/**", "/event/**",
+      .antMatchers("/search/**", "/signin/**", "/error", "/signup/**", "/autocomplete", "/drug/**", "/enforcement/**", "/event/**",
         "/recalls/**", "/user/**", "/", "/index.html" ,"/recalls" ,"/drug/recalls", "/drug/enforcements").permitAll()
       .antMatchers("/**").authenticated()
       .and()

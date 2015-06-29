@@ -1,17 +1,14 @@
 <!-- Hero Search -->
 <section id="hero" class="section">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-                <div class="jumbotron text-center">
-                    <p class="lead">Look up drug safety recalls and adverse effects:</p>
-                      {{autocomplete-search large=true action="performSearch"}}
-                </div>
-            </div>
+        <div class="jumbotron text-center">
+            <p class="lead">Your Source for Helpful Information About FDA-Regulated Drugs</p>
+            {{autocomplete-search large=true action="performSearch"}}
         </div>
     </div>
 </section>
 
+<!-- Dashboards -->
 {{#if userIsAuthenticated}}
     {{partial "dashboards/authenticated"}}
 {{else}}

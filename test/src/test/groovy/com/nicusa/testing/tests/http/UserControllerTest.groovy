@@ -1,13 +1,10 @@
-package com.nicusa.testing.tests
+package com.nicusa.testing.tests.http
 
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.RESTClient
 import org.apache.http.client.params.ClientPNames
 import org.apache.http.params.BasicHttpParams
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 class UserControllerTest {
 

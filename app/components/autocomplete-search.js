@@ -11,7 +11,7 @@ export default Ember.Component.extend({
         $.ajax({
           type: 'GET',
           dataType:'json',
-          url: '/autocomplete?name=' + $('.drug-search').val(),
+          url: 'autocomplete?name=' + $('.drug-search').val(),
           data: request.value,
           error: function (xhr) {
             console.log('Error: ' + xhr.responseText);
@@ -37,9 +37,7 @@ export default Ember.Component.extend({
   },
   actions: {
     sendSearch: function() {
-      // var keyword = this.get('searchQuery').replace(" ", "+AND+");
-      var keyword = $('.drug-search').val().replace(" ", "+AND+");
-      // var keyword = encodeURIComponent(this.get('keyword'));
+      var keyword = $('.drug-search').val().replace(/ /g,"+");
       console.log("sending search. keyword=" + keyword);
       this.sendAction('action', keyword);
     }

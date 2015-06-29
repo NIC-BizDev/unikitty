@@ -82,7 +82,7 @@ public class FeedController {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(searchDrugEnfrcmntUrl)
                 .queryParam("search", getDefaultReportDateQuery(fromDt, toDt))
                 .queryParam("limit", mostRecentRecallsLimit);
-        this.apiKey.addToUriComponentsBuilder( builder ); 
+        this.apiKey.addToUriComponentsBuilder( builder );
         ObjectMapper mapper = new ObjectMapper();
         String json = rest.getForObject(builder.build().toUri(), String.class);
         node = mapper.readTree(json);

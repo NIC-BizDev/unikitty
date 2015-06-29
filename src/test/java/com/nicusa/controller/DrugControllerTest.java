@@ -47,7 +47,7 @@ public class DrugControllerTest {
     DrugResource drugResource = new DrugResource();
     when(entityManager.find(Drug.class, 1L)).thenReturn(persistedDrug);
     when(drugAssembler.toResource(persistedDrug)).thenReturn(drugResource);
-    ResponseEntity<DrugResource> drugResourceResponseEntity = drugController.getDrug(1L);
+    ResponseEntity<DrugResource> drugResourceResponseEntity = drugController.get(1L);
     assertThat(HttpStatus.OK, is(drugResourceResponseEntity.getStatusCode()));
     assertThat(drugResourceResponseEntity.getBody(), is(drugResource));
   }
@@ -56,7 +56,7 @@ public class DrugControllerTest {
   @Test
   public void testGetDrugNotFound() {
     when(entityManager.find(Drug.class, 1L)).thenReturn(null);
-    ResponseEntity<DrugResource> drugResourceResponseEntity = drugController.getDrug(1L);
+    ResponseEntity<DrugResource> drugResourceResponseEntity = drugController.get(1L);
     assertThat(HttpStatus.NOT_FOUND, is(drugResourceResponseEntity.getStatusCode()));
     assertThat(drugResourceResponseEntity.getBody(), is(nullValue()));
   }

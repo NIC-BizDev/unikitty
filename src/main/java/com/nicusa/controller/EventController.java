@@ -84,7 +84,7 @@ public class EventController {
         max = terms.get( k );
       }
     }
-    
+
     Set<AdverseEffect> effects = new TreeSet<AdverseEffect>();
     for ( String k : terms.keySet() ) {
       AdverseEffect ef = new AdverseEffect();

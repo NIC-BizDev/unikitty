@@ -1,10 +1,9 @@
-package com.nicusa.testing.tests
+package com.nicusa.testing.tests.http
 
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.RESTClient
 import org.apache.http.client.params.ClientPNames
 import org.junit.Test
-import org.springframework.beans.factory.annotation.Value
 
 class DrugControllerTest {
 
@@ -18,4 +17,6 @@ class DrugControllerTest {
             assert response.status == 200
         }
     }
+
+
 }

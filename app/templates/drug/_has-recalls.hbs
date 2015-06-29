@@ -1,0 +1,12 @@
+<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#drug-recalls" aria-controls="home" role="tab" data-toggle="tab">Recalls</a></li>
+		<li role="presentation"><a href="#drug-effects" aria-controls="profile" role="tab" data-toggle="tab">Adverse Effects</a></li>
+</ul>
+<div class="tab-content">
+	<div role="tabpanel" class="tab-pane fade in active" id="drug-recalls">
+		{{partial "drug/recalls"}}
+	</div>
+	<div role="tabpanel" class="tab-pane fade" id="drug-effects">
+		{{partial "drug/effects"}}
+	</div>
+</div>

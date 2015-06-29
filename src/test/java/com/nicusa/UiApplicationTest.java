@@ -41,12 +41,4 @@ public class UiApplicationTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
-  @Test
-  public void loginSucceeds() {
-    RestTemplate template = new TestRestTemplate("user", "password");
-    ResponseEntity<String> response = template.getForEntity("http://localhost:" + port
-            + "/resource", String.class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-  }
-
 }

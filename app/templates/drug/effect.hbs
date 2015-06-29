@@ -1,0 +1,64 @@
+<div class="panel-body text-center">
+  <p class="lead">{{description}}</p>
+    <!-- <div class="col-xs-12 col-sm-4 text-center">
+      {{easy-pie-chart dataPercent=percent percentText=percent barColor="#3366cc" trackColor="#fff" lineWidth="5" animate="1500"}}
+      {{to-json model.outcomeCount}}
+      <h4 class="count">{{model.outcomeCount.total}}</h4>
+      <label class="label-reports">Reports</label>
+    </div> -->
+  <p class="lead">{{description}}</p>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12">
+      <h4>Reported Severity</h4>
+      <div class="progress">
+        <div class="progress-bar progress-bar-info" style={{progress-bar-percentage model.outcomeCount.Outcome1.pct}}>
+          {{model.outcomeCount.Outcome1.count}}
+        </div>
+        <div class="progress-bar progress-bar" style={{progress-bar-percentage model.outcomeCount.Outcome2.pct}}>
+          {{model.outcomeCount.Outcome2.count}}
+        </div>
+        <div class="progress-bar progress-bar-success" style={{progress-bar-percentage model.outcomeCount.Outcome3.pct}}>
+          {{model.outcomeCount.Outcome3.count}}
+        </div>
+        <div class="progress-bar progress-bar-warning" style={{progress-bar-percentage model.outcomeCount.Outcome4.pct}}>
+          {{model.outcomeCount.Outcome4.count}}
+        </div>
+        <div class="progress-bar progress-bar-danger" style={{progress-bar-percentage model.outcomeCount.Outcome5.pct}}>
+          {{model.outcomeCount.Outcome5.count}}
+        </div>
+      </div>
+      <p>
+        <span class="label-severity text-info"><i class="fa fa-square"></i> Fully Recovered</span>
+        <span class="label-severity text-primary"><i class="fa fa-square"></i> Improving</span>
+        <span class="label-severity text-success"><i class="fa fa-square"></i> Persisting Condition</span>
+        <span class="label-severity text-warning"><i class="fa fa-square"></i> Recovered with Consequences</span>
+        <span class="label-severity text-danger"><i class="fa fa-square"></i> Death</span>
+      </p>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-sm-4 text-center">
+      <h4>Reported by Gender</h4>
+      <div class="row">
+        <div class="col-xs-6">
+          <p class="lead male">
+            <i class="fa fa-male fa-3x"></i><br />
+            {{model.genderCount.male.pct}}% <small>Male</small>
+          </p>
+        </div>
+        <div class="col-xs-6">
+          <p class="lead female">
+            <i class="fa fa-female fa-3x"></i><br />
+            {{model.genderCount.female.pct}}% <small>Female</small>
+          </p>
+        </div>
+      </div>
+      <hr class="visible-xs" />
+    </div>
+    <div class="col-sm-8">
+      <h4>Reported by Age</h4>
+      {{chartist-chart type="line" options=model.chartOptions data=model.ageCount.results }}
+    </div>
+  </div>
+</div>

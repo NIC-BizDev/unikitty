@@ -29,19 +29,14 @@
             <version>4.11</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.groovy.modules.http-builder</groupId>
             <artifactId>http-builder</artifactId>
             <version>0.7.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>4.1.6.RELEASE</version>
-    </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>4.1.6.RELEASE</version>
         </dependency>
     </dependencies>
 
@@ -52,8 +47,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <api.user.endpoint>${api.user.endpoint}</api.user.endpoint>
-                        <api.drug.endpoint>${api.drug.endpoint}</api.drug.endpoint>
+                        <application.context.root>${application.context.root}</application.context.root>
                     </systemPropertyVariables>
                     <includes>
                         <include>**/*Test.*</include>
@@ -94,8 +88,7 @@
         <profile>
             <id>local</id>
             <properties>
-                <api.drug.endpoint>http://localhost:8080/drug</api.drug.endpoint>
-                <api.user.endpoint>http://localhost:8080/user</api.user.endpoint>
+                <application.context.root>http://localhost:8080</application.context.root>
             </properties>
         </profile>
     </profiles>

@@ -1,0 +1,38 @@
+<h3 class="h2">Drug Recalls</h3>
+<!-- <form role="search">
+    <div class="form-group">
+        <label class="sr-only">Search Recalls</label>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search recalls..." />
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+            </span>
+        </div>
+    </div>
+</form> -->
+{{#each model.recalls.results as |recall|}}
+    <div class="recall">
+        <div class="row">
+            <div class="col-sm-8 col-md-9">
+                <h3 class="title-recall"><span class="label label-success">{{recall.status}}</span>Recall Number: {{recall.recall_number}}</h3>
+                <p><strong class="prepend">Product Description:</strong> {{recall.product_description}}</p>
+                <p><strong class="prepend">Recall Reason:</strong> {{recall.reason_for_recall}}</p>
+                <p><strong class="prepend">Initiation Date:</strong> {{format-date recall.recall_initiation_date}} &bull; <strong class="prepend">Report Date:</strong> {{format-date recall.report_date}}</p>
+                <p><strong class="prepend">Reporting Firm:</strong> {{recall.recalling_firm}}</p>
+            </div>
+            <div class="col-sm-4 col-md-3 text-center">
+                <h4>Recall Distribution:</h4>
+                {{us-maps distribution_pattern=recall.distribution_pattern}}
+
+                {{#if recall.distribution_pattern}}
+                    {{#each recall.distribution_pattern as |state|}}
+                        <span class="single-state">{{state}}</span>
+                    {{/each}}
+                {{else}}
+                    <span class="usa">USA</span>
+                {{/if}}
+            </div>
+        </div>
+        <hr />
+    </div>
+{{/each}}

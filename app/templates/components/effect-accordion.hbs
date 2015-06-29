@@ -1,79 +1,18 @@
-<div class="effect panel panel-default">
-  <div class="panel-heading" role="tab" id="{{ name}}" {{action 'sendEffectData' this}}>
+{{#link-to 'drug.effect' name}}
+  <div class="panel-heading" role="tab" id="{{effect-slug name}}">
     <h4 class="panel-title">
-      <a role="button" data-toggle="collapse" data-parent="#effects" href="#{{ name}}" aria-expanded="true" aria-controls="collapseOne">
+      <a class="clearfix" role="button" data-toggle="collapse" data-parent="#effects" data-target="#{{effect-content-slug name}}" aria-expanded="true" aria-controls="collapseOne">
         <i class="fa fa-chevron-down fa-2x pull-right toggle-icon" data-toggle="tooltip" data-placement="left" title="Click to toggle details."></i>
-        {{name}}
-        <span class="count">{{count}} Cases Reported</span>
-        <small>Stubbed effect description.{{description}}</small>
+        {{easy-pie-chart size=35 dataPercent=percent percentText=" " percentSign=" " barColor="#3366cc" trackColor="#eee" lineWidth="3" animate="1500" scaleLength=0}}
+        <div class="effect-header">
+            {{name}}
+            <span class="count">{{count}} Cases Reported</span>
+            <small class="description">Stubbed effect description.{{description}}</small>
+        </div>
       </a>
     </h4>
   </div>
-  <div id="{{ name}}" class="panel-collapse panel-details collapse" role="tabpanel" aria-labelledby="{{ name}}">
-    <div class="panel-body">
-      <p class="lead">{{description}}</p>
-      <!-- PLACEHOLDER FOR SEVERITY -->
-      <div class="row">
-        <div class="col-xs-12 col-sm-4 text-center">
-          <!-- {{easy-pie-chart dataPercent=percent percentText=percent barColor="#3366cc" trackColor="#eee" lineWidth="5" animate="1500"}} -->
-          <h4 class="count">{{count}}</h4>
-          <label class="label-reports">Reports</label>
-        </div>
-        <div class="col-xs-12 col-sm-8">
-          <h4>Reported Severity</h4>
-          <div class="progress">
-            <div class="progress-bar progress-bar-info" style="width: 35%" data-toggle="tooltip" data-placement="bottom" title="Fully Recovered">
-              35%
-            </div>
-            <div class="progress-bar progress-bar" style="width: 20%" data-toggle="tooltip" data-placement="bottom" title="Improving">
-              20%
-            </div>
-            <div class="progress-bar progress-bar-success" style="width: 10%" data-toggle="tooltip" data-placement="bottom" title="Persisting Condition">
-              10%
-            </div>
-            <div class="progress-bar progress-bar-warning" style="width: 25%" data-toggle="tooltip" data-placement="bottom" title="Recovered with Consequences">
-              25%
-            </div>
-            <div class="progress-bar progress-bar-danger" style="width: 10%" data-toggle="tooltip" data-placement="bottom" title="Death">
-              10%
-            </div>
-          </div>
-          <small>
-            <span class="label label-info">Fully Recovered</span>
-            <span class="label label-primary">Improving</span>
-            <span class="label label-success">Persisting Condition</span>
-            <span class="label label-warning">Recovered with Consequences</span>
-            <span class="label label-danger">Death</span>
-          </small>
-        </div>
-      </div>
-      <hr />
-      <div class="row">
-        <div class="col-sm-4 text-center">
-          <!-- PLACEHOLDER FOR GENDER -->
-          <h4>Reported by Gender</h4>
-          <div class="row">
-            <div class="col-xs-6">
-              <p class="lead male">
-                <i class="fa fa-male fa-3x"></i><br />
-                {{ malePercent }}% <small>Male</small>
-              </p>
-            </div>
-            <div class="col-xs-6">
-              <p class="lead female">
-                <i class="fa fa-female fa-3x"></i><br />
-                {{ femalePercent }}% <small>Female</small>
-              </p>
-            </div>
-          </div>
-          <hr class="visible-xs" />
-        </div>
-        <div class="col-sm-8">
-          <!-- PLACEHOLDER FOR AGES -->
-          <h4>Ages Effected</h4>
-          <!-- {{morris-charts type="Line" data=DATA xKey=age.year yKeys=age.value labels=Reports resize=true}} -->
-        </div>
-      </div>
-    </div>
-  </div>
+{{/link-to}}
+<div id="{{effect-content-slug name}}" class="panel-collapse panel-details collapse" role="tabpanel" aria-labelledby="{{name}}">
+    {{outlet}}
 </div>

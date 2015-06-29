@@ -1,44 +1,55 @@
-<section id="dashboard-public" class="section">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-		        <div class="row">
-			        <div class="col-sm-4 text-center">
-				        <h2>
-					        <i class="fa fa-search"></i><br />
-					        Search
-				        </h2>
-				        <p>Look up drugs to learn about recalls and adverse effects.</p>
-			        </div>
-			        <div class="col-sm-4 text-center">
-				        <h2>
-					        <i class="fa fa-bookmark"></i><br />
-					        Save
-				        </h2>
-				        <p>Add drugs to My Meds for quick reference and latest recalls.</p>
-			        </div>
-			        <div class="col-sm-4 text-center">
-				        <h2>
-					        <i class="fa fa-bell"></i><br />
-					        Notify
-				        </h2>
-				        <p>Set up email alerts to stay up-to-date with drug recalls.</p>
-			        </div>
-		        </div>
-                <div class="page-header"><h2>Latest Drug Recalls</h2></div>
-
-                {{#each model.results as |recall|}}
-                    <div class="recall">
-    					<h3 class="title-recall"><span class="label label-success">{{recall.status}}</span>Recall Number: {{recall.recall_number}}</h3>
-    					<p><strong class="prepend">Product Description:</strong> {{recall.product_description}}</p>
-    					<p><strong class="prepend">Recall Reason:</strong> {{recall.reason_for_recall}}</p>
-    					<p><strong class="prepend">Initiation Date:</strong> {{format-date recall.recall_initiation_date}} &bull; <strong class="prepend">Report Date:</strong> {{format-date recall.report_date}}</p>
-    					<p><strong class="prepend">Reporting Firm:</strong> {{recall.recalling_firm}}</p>
-    					<hr />
-    				</div>
-                {{/each}}
-
+<section id="dashboard-public">
+	<div class="container">
+	
+	    <div class="row">
+	        <div class="col-sm-4">
+		        <p class="lead"><strong><i class="fa fa-search fa-fw"></i> Search</strong> for prescription and over-the-counter drugs by name.</p> 
+		        <hr />
+	        </div>
+	        <div class="col-sm-4">
+		        <p class="lead"><strong><i class="fa fa-bar-chart fa-fw"></i> View</strong> FDA drug recalls and reported adverse effects.</p> 
+		        <hr />
+	        </div>
+	        <div class="col-sm-4">
+		        <p class="lead"><strong><i class="fa fa-bookmark fa-fw"></i> Save</strong> drugs you commonly take to My Meds for future reference.</p> 
+		        <hr />
+	        </div>
+	    </div>
+	    <div class="row">
+	        <div class="col-sm-4">
+				<p class="lead"><strong><i class="fa fa-plus-square fa-fw"></i> Create</strong> customized medication lists for the people you care for.</p> 
+		        <hr class="visible-xs" />
+	        </div>
+	        <div class="col-sm-4">
+				<p class="lead"><strong><i class="fa fa-flask fa-fw"></i> Research</strong> symptoms in My Meds to determine possible causes.</p> 
+		        <hr class="visible-xs" />
+	        </div>
+	        <div class="col-sm-4">
+				<p class="lead"><strong><i class="fa fa-exclamation-triangle fa-fw"></i> Notify</strong> me of any new FDA drug safety recalls in My Meds.</p> 
+		        <hr class="visible-xs" />
+	        </div>
+	    </div>
+    
+	    <div class="page-header"><h2>Latest Drug Recalls</h2></div>
+	
+	    {{#each model.results as |recall|}}
+        <div class="recall">
+            <div class="row">
+                <div class="col-sm-8 col-md-9">
+                    <h3 class="title-recall"><span class="label label-success">{{recall.status}}</span>Recall Number: {{recall.recall_number}}</h3>
+                    <p><strong class="prepend">Product Description:</strong> {{recall.product_description}}</p>
+                    <p><strong class="prepend">Recall Reason:</strong> {{recall.reason_for_recall}}</p>
+                    <p><strong class="prepend">Initiation Date:</strong> {{format-date recall.recall_initiation_date}} &bull; <strong class="prepend">Report Date:</strong> {{format-date recall.report_date}}</p>
+                    <p><strong class="prepend">Reporting Firm:</strong> {{recall.recalling_firm}}</p>
+                </div>
+                <div class="col-sm-4 col-md-3 text-center">
+                    <h4>Recall Distribution:</h4>
+                    {{us-maps distribution_pattern=recall.distribution_pattern}}
+                </div>
             </div>
+            <hr />
         </div>
-    </div>
+	    {{/each}}
+
+	</div>
 </section>

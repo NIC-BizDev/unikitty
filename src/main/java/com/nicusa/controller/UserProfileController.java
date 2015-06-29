@@ -31,7 +31,7 @@ public class UserProfileController {
   @Autowired
   private UserProfileResourceToDomainConverter userProfileResourceToDomainConverter;
 
-  @RequestMapping(value = "/user", method = RequestMethod.GET, produces = "application/hal+json")
+  @RequestMapping(value = "/user", method = RequestMethod.GET, produces = "application/json")
   public ResponseEntity<?> getUser() {
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setLocation(linkTo(methodOn(UserProfileController.class).getUserProfile(securityController
@@ -40,7 +40,7 @@ public class UserProfileController {
   }
 
   @ResponseBody
-  @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = "application/hal+json")
+  @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = "application/json")
   public ResponseEntity<UserProfileResource> getUserProfile(@PathVariable("id") Long id) {
     if(id == UserProfileResource.ANONYMOUS_USER_PROFILE_ID) {
       return new ResponseEntity<UserProfileResource>(UserProfileResource.ANONYMOUS_USER_PROFILE, HttpStatus.OK);
@@ -60,7 +60,7 @@ public class UserProfileController {
   }
 
   @ResponseBody
-  @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = "application/hal+json")
+  @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = "application/json")
   public ResponseEntity<?> createUserProfile(@RequestBody UserProfileResource userProfileResource) {
     UserProfile userProfile = userProfileResourceToDomainConverter.convert(userProfileResource);
     if(securityController.getAuthenticatedUserProfileId() != userProfile.getId() ||

@@ -6,14 +6,34 @@
 
 @brand-primary:				#3366cc;
 @brand-success:				#339933;
+@brand-secondary:			#999;
+
 @link-color:				@brand-primary;
 
 @modal-backdrop-bg:			#000;
 @modal-backdrop-opacity:	.9;
 
+@fb-blue:					#3b579d;
+
+
+@btn-fb-color:              @fb-blue;
+@btn-fb-bg:                 #f8f8f8;
+@btn-fb-border:             #eee;
+
+.btn-fb {
+	.button-variant(@btn-fb-color; @btn-fb-bg; @btn-fb-border);
+}
+
+
+html, body {
+	min-height: 100%;
+	margin: 0;
+	position: relative;
+}
+
 // Contextual colors
 .text-muted {
-  color: @text-muted;
+  color: #999;
 }
 .text-primary {
   color: @brand-primary;
@@ -64,12 +84,13 @@ body {
 			border-color: #eee;
 			box-shadow: none;
 			background: #f8f8f8;
+			height: 32px;
 		}
 		button {
 			border-radius: 0 17px 17px 0 !important;
 			text-transform: uppercase;
 			font-weight: 700;
-			padding: 6px 12px;
+			padding: 5px 12px;
 			background: #f8f8f8;
 			&.btn-default {
 				color: @link-color;
@@ -77,7 +98,7 @@ body {
 				border-left: 0px none;
 				&:hover,
 				&:focus {
-					background: #f5f5f5;
+					background: #eee;
 					color: @link-hover-color;
 				}
 			}
@@ -134,13 +155,69 @@ body {
 	}
 }
 
-#info {
+#dashboard-public {
+	padding: 60px 0;
 	@media only screen and (max-width:767px) {
-		padding: 0 0 0 0;
+		padding: 30px 0;
+	}
+	h1 {
+		font-weight: 900;
+		margin-top: 0;
+	}
+	h2 {
+		font-weight: 700;
 	}
 	p {
-		font-size: 10px;
-		color: #999;
+		font-size: 16px;
+		margin-top: 20px;
+		&.lead {
+			font-size: 18px;
+			margin-top: 0;
+			strong {
+				text-transform: uppercase;
+				i {
+					color: @brand-info;
+					float: left;
+					margin: 2px 5px 40px 0;
+					font-size: 1.1em;
+				}
+			}
+		}
+	}
+	.page-header {
+		padding-top: 60px;
+	}
+}
+
+#search-results {
+	.drug {
+		h3 {
+			color: @link-color;
+			cursor: pointer;
+			&:hover,
+			&:focus {
+				color: @link-hover-color;
+			}
+		}
+	}
+}
+
+#info {
+	background: #f8f8f8;
+	border-top: 1px solid #eee;
+	@media only screen and (max-width:767px) {
+		padding: 15px 0;
+	}
+	p {
+		&.credit {
+			font-size: 12px;
+			line-height: 20px;
+			color: #999;
+			margin: 0 0 0 0;
+		}
+	}
+	hr {
+		margin: 10px 0;
 	}
 }
 
@@ -220,6 +297,7 @@ hr {
 
 .map {
 	width: 100%;
+	position: relative;
 	.ember-view {
 		width: 100%;
 	}
@@ -254,6 +332,7 @@ a {
 }
 
 h3 {
+	color: @brand-secondary;
 	small {
 		display: block;
 		line-height: 1.5;
@@ -299,6 +378,23 @@ small {
 }
 
 .effect {
+	.label-severity {
+		margin-right: 10px;
+		@media only screen and (max-width:767px) {
+			display: block;
+			text-align: center;
+			margin-right: 0;
+		}
+	}
+	.effect-header {
+		padding-left: 45px;
+		float: left;
+	}
+	.panel-body {
+		h4 {
+			margin-bottom: 20px;
+		}
+	}
 }
 
 .active-ingredients {
@@ -319,9 +415,14 @@ small {
 	height: 100%;
 	background: #fff;
 	position: fixed;
-	top: 0; left: 0;
-	padding-top: 300px;
+	top: 0; left: 0; right: 0; bottom: 0;
 	z-index: 1020;
+	.center-vert {
+		position: absolute;
+		width: 100%;
+		top: 50%;
+		transform: translateY(-50%);
+	}
 }
 
 h4.count {
@@ -344,12 +445,11 @@ h4.count {
 }
 
 .percentage {
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	position: relative;
+	margin-left: 15px;
 	color: #fff;
 	content: none;
+	float: left;
 	canvas {
 		position: absolute;
 		top: 0;
@@ -376,33 +476,38 @@ h4.count {
 	}
 }
 
-.panel-title {
-	font-weight: 700;
-	a {
-		color: @link-color;
-		display: block;
-		&:hover {
-			color: @link-hover-color;
-			i {
-				color: @link-hover-color;
-			}
-		}
-		i {
-			color: #ccc;
+.panel-heading {
+	background: #eee;
+	padding: 0 0 0 0;
+	.panel-title {
+		font-weight: 700;
+		a {
+			padding: 10px 15px;
+			color: @link-color;
+			display: block;
 			&:hover {
 				color: @link-hover-color;
+				i {
+					color: @link-hover-color;
+				}
 			}
-		}
-		.count {
-			font-weight: 300;
-			color: @text-color;
-			@media only screen and (max-width:767px) {
+			i {
+				color: #ccc;
+				&:hover {
+					color: @link-hover-color;
+				}
+			}
+			.count {
+				font-weight: 300;
+				color: @text-color;
+				@media only screen and (max-width:767px) {
+					display: block;
+				}
+			}
+			small {
 				display: block;
-			}		
-		}
-		small {
-			display: block;
-			line-height: 1.5;
+				line-height: 1.5;
+			}
 		}
 	}
 }
@@ -411,7 +516,7 @@ h4.count {
 	h4 {
 		@media only screen and (max-width:767px) {
 			text-align: center;
-		}		
+		}
 	}
 	.label-reports {
 		margin-bottom: 20px;
@@ -427,4 +532,22 @@ h4.count {
 
 .female {
 	color: lighten(@brand-danger,10%);
+}
+
+// Line Charts
+.ct-series-a .ct-line {
+  stroke: @brand-primary !important;
+}
+
+.ct-chart.ct-square:before {
+	padding-bottom: 30%;
+	@media only screen and (max-width:767px) {
+		padding-bottom: 60% !important;
+	}
+	@media only screen and (min-width:768px) {
+		padding-bottom: 45% !important;
+	}
+	@media only screen and (min-width:992px) {
+		padding-bottom: 30% !important;
+	}
 }

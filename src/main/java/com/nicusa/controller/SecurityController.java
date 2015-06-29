@@ -1,5 +1,6 @@
 package com.nicusa.controller;
 
+import com.nicusa.domain.Portfolio;
 import com.nicusa.domain.UserProfile;
 import com.nicusa.resource.UserProfileResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,11 @@ public class SecurityController {
     userProfile.setName(socialUserProfile.getName());
     userProfile.setEmailAddress(socialUserProfile.getEmail());
     entityManager.persist(userProfile);
+    Portfolio portfolio = new Portfolio();
+    entityManager.persist(new Portfolio());
+    userProfile.setPortfolio(portfolio);
+    entityManager.merge(userProfile);
+
 
     signin(userProfile);
 

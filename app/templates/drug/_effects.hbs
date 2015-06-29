@@ -1,0 +1,17 @@
+<h3 class="h2">Adverse Effects</h3>
+<!-- <form role="search">
+    <div class="form-group">
+        <label class="sr-only">Search Effects</label>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search recalls..." />
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+            </span>
+        </div>
+    </div>
+</form> -->
+<div class="panel-group" id="effects" role="tablist" aria-multiselectable="true">
+    {{#each model.effects.effect as |effect|}}
+        {{effect-accordion name=effect.effect count=effect.count percent=effect.percent description=effect.description}}
+    {{/each}}
+</div>

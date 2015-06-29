@@ -36,5 +36,4 @@ public class DrugControllerIT extends MockMvcTestBase {
         assertTrue(node.get(7).asText().trim().equalsIgnoreCase("ADVICOR"));
         assertTrue(node.get(8).asText().trim().equalsIgnoreCase("ADVIL"));
     }
-
 }

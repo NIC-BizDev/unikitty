@@ -1,37 +1,65 @@
 <nav class="navbar navbar-default navbar-fixed-top">
-	<div class="container">
-		<div class="navbar-header">
-			{{#link-to 'dashboard' class="navbar-brand text-hide"}}
-				MyFDA
-			{{/link-to}}
+    <div class="container">
+        <div class="navbar-header">
+          {{#link-to 'dashboard' class="navbar-brand text-hide"}}
+              MyFDA
+          {{/link-to}}
 
-			<!-- Navigation Search Bar -->
-			{{#unless isDashboard}}
-				{{autocomplete-search action="performSearch"}}
-			{{/unless}}
+            <!-- Navigation Search Bar -->
+          {{#unless isDashboard}}
+            {{autocomplete-search action="performSearch"}}
+          {{/unless}}
 
-		</div>
-		<div id="nav-collapse-main" class="navbar-collapse">
-			{{#if userIsAuthenticated}}
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#"><i class="fa fa-user"></i> My Account</a></li>
-					<li><a href="#"><i class="fa fa-sign-out"></i> Log Out</a></li>
-				</ul>
-			{{else}}
-				<button type="button" class="btn btn-primary navbar-btn navbar-right" data-toggle="modal" data-target="#register"><i class="fa fa-facebook-square"></i> Log In with Facebook</button>
-			{{/if}}
-		</div>
-	</div>
+        </div>
+        <div id="nav-collapse-main" class="navbar-collapse">
+          {{#if userIsAuthenticated}}
+              <ul class="nav navbar-nav navbar-right">
+                  <li><a href="#"><i class="fa fa-user"></i> My Account</a></li>
+                  <li><a href="#"><i class="fa fa-sign-out"></i> Log Out</a></li>
+              </ul>
+          {{else}}
+              <form name="fb_signin" id="fb_signin" action="/signin/facebook" method="POST">
+                  <button href="/signin" class="btn btn-fb navbar-btn navbar-right"><i
+                          class="fa fa-facebook-square"/> Log In with Facebook
+                  </button>
+              </form>
+          {{/if}}
+        </div>
+    </div>
 </nav>
 
 {{outlet}}
 
-<!-- Login Modal -->
-{{partial "login-modal"}}
-
 <!-- Footer -->
 <section id="info" class="section" role="contentinfo">
 	<div class="container">
-		<p>MyFDA by NIC, Inc. using openFDA. openFDA is a beta research project and not for clinical use. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated.</p>
+		<p class="text-center">Help make MyFDA better by <a href="#">providing feedback</a>.</p>
+		<hr />
+		<div class="row">
+			<div class="col-md-2 col-sm-3 text-center">
+				<div class="center-block"><img src="assets/images/openfda.png" alt="openFDA" class="img-responsive" /></div>
+			</div>
+			<div class="col-md-10 col-sm-9">
+				<p class="credit">openFDA is a beta research project and not for clinical use. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated.</p>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col-md-2 col-sm-3 text-center">
+				<div class="center-block"><img src="assets/images/mw-logo-light-background-125x125.png" alt="Merriam-Webster's Medical&reg; Dictionary" class="img-responsive" /></div>
+			</div>
+			<div class="col-md-10 col-sm-9">
+				<p class="credit">Adverse effect definitions courtesy of Merriam-Webster's Medical<sup>&reg;</sup> Dictionary</p>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col-md-2 col-sm-3 text-center">
+				<div class="center-block"><img src="assets/images/nic.png" alt="NIC, Inc." class="img-responsive" /></div>
+			</div>
+			<div class="col-md-10 col-sm-9">
+				<p class="credit">Prototype made by NIC Technologies</p>
+			</div>
+		</div>
 	</div>
 </section>

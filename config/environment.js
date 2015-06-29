@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'unikitty',
     environment: environment,
     baseURL: '/',
-    locationType: 'auto',
+    locationType: 'hash',
     contentSecurityPolicy: {
             'connect-src': "'self' *",
             'font-src': "'self' *"

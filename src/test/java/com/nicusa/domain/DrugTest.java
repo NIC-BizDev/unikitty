@@ -30,6 +30,8 @@ public class DrugTest {
     public void getNameShouldReturnTheValuePassedInSetName() throws Exception {
         assertThat(drug.getId(), is(nullValue()));
         drug.setName("unikitty");
+        drug.setUnii("6M3C89ZY6R");
         assertThat(drug.getName(), is("unikitty"));
+        assertThat(drug.getUnii(), is("6M3C89ZY6R"));
     }
 }

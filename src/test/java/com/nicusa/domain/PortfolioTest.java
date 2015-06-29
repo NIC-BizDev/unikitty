@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
@@ -31,9 +32,16 @@ public class PortfolioTest {
 
     @Test
     public void testGetDrugs() {
-        assertThat(portfolio.getDrugs(), is(nullValue()));
+        assertThat(portfolio.getDrugs(), is(empty()));
         Collection<Drug> drugs = new ArrayList<>();
+        drugs.add(new Drug());
         portfolio.setDrugs(drugs);
         assertThat(portfolio.getDrugs(), is(drugs));
     }
+
+    @Test
+    public void testGetName() {
+      assertThat(portfolio.getName(), is("My Meds"));
+    }
+
 }
