@@ -2,18 +2,29 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-				<div class="page-header"><h2>Search Results for {{searchQuery}} <small>{{model.length}} Results</small></h2></div>
-
+				<div class="page-header" id="search-result-list"><h1>{{searchQuery}} <small>{{model.length}} Search Results</small></h1></div>
 				<!-- Search Results -->
 				{{#each model as |result|}}
 					<div class="drug">
-						<h3>{{#link-to 'drug' result.unii}}{{result.brandName}} <small>({{result.genericName}})</small>{{/link-to}}</h3>
+						<span {{action 'setCurrentDrug' result.brandName result.unii}} >
+							<h3>
+								{{result.brandName}}
+								<small>({{result.genericName}})</small>
+							</h3>
+						</span>
 						<p class="active-ingredients"><strong class="prepend">Active Ingredient(s):</strong>
 							{{#each result.activeIngredients as |ingredient|}}
 								<span class="active-ingredient">{{ingredient}}</span>
 							{{/each}}
 						</p>
-						<p>{{#link-to 'drug' result.unii class="btn btn-default"}}<i class="fa fa-info-circle"></i> Learn More{{/link-to}} <a href="#" class="btn btn-default"><i class="fa fa-bookmark"></i> Add to My Meds</a></p>
+						<p>
+							<div class="btn btn-default" {{action 'setCurrentDrug' result.brandName result.unii}}>
+								<i class="fa fa-info-circle"></i> Learn More
+							</div>
+							 <a href="#" class="btn btn-default">
+								<i class="fa fa-bookmark"></i> Add to My Meds
+							 </a>
+						</p>
 						<hr />
 					</div>
 				{{/each}}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:social="http://spring.io/springsocial"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+  <title>myFDA Signin</title>
+</head>
+<body>
+
+<div id="content" layout:fragment="content">
+
+  <p>You have reached this page because your application did not prompt the user to sign in before using an
+  endpoint that requires authentication.  See below for an example of how to authenticate the user with this
+  API:</p>
+
+  <!-- FACEBOOK SIGNIN -->
+  <form name="fb_signin" id="fb_signin" th:action="@{/signin/facebook}" method="POST">
+    <button type="submit">Login</button>
+  </form>
+
+</div>
+</body>
+</html>

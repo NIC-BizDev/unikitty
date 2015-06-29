@@ -17,6 +17,8 @@ ADD .ember-cli /opt/unikitty/
 WORKDIR /opt/unikitty
 RUN mvn package -DskipTests -Dmaven.test.skip=true
 
+VOLUME /opt/config
+
 EXPOSE 8080
 
-CMD java -jar /opt/unikitty/target/*.jar
+CMD java -jar /opt/unikitty/target/*.jar --spring.config.location=file:/opt/config/application.properties

@@ -28,6 +28,16 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy.modules.http-builder</groupId>
+            <artifactId>http-builder</artifactId>
+            <version>0.7.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -36,6 +46,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <systemPropertyVariables>
+                        <application.context.root>${application.context.root}</application.context.root>
+                    </systemPropertyVariables>
                     <includes>
                         <include>**/*Test.*</include>
                     </includes>
@@ -70,5 +83,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <application.context.root>http://localhost:8080</application.context.root>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

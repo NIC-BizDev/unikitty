@@ -8,12 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.security.Principal;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -28,30 +26,52 @@ public class UserProfileController {
   private UserProfileAssembler userProfileAssembler;
 
   @Autowired
+  private SecurityController securityController;
+
+  @Autowired
   private UserProfileResourceToDomainConverter userProfileResourceToDomainConverter;
 
-  @ResponseBody
-  @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = "application/hal+json")
-  public ResponseEntity<UserProfileResource> getUserProfile(@AuthenticationPrincipal Principal principal,
-                                                            @PathVariable("id") Long id) {
-    UserProfile userProfile = entityManager.find(UserProfile.class, id);
-    if (userProfile == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-    return new ResponseEntity<>(userProfileAssembler.toResource(userProfile), HttpStatus.OK);
+  @RequestMapping(value = "/user", method = RequestMethod.GET, produces = "application/json")
+  public ResponseEntity<?> getUser() {
+    HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setLocation(linkTo(methodOn(UserProfileController.class).getUserProfile(securityController
+      .getAuthenticatedUserProfileId())).toUri());
+    return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
   }
 
   @ResponseBody
-  @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = "application/hal+json")
-  public ResponseEntity<?> createUserProfile(@AuthenticationPrincipal Principal principal,
-                                             @RequestBody UserProfileResource userProfileResource) {
+  @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = "application/json")
+  public ResponseEntity<UserProfileResource> getUserProfile(@PathVariable("id") Long id) {
+    if(id == UserProfileResource.ANONYMOUS_USER_PROFILE_ID) {
+      return new ResponseEntity<UserProfileResource>(UserProfileResource.ANONYMOUS_USER_PROFILE, HttpStatus.OK);
+    } else {
+      Long loggedInUserProfileId = securityController.getAuthenticatedUserProfileId();
+      if (loggedInUserProfileId != null && loggedInUserProfileId.equals(id)) {
+        UserProfile userProfile = entityManager.find(UserProfile.class, id);
+        if (userProfile == null) {
+          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+          return new ResponseEntity<UserProfileResource>(userProfileAssembler.toResource(userProfile), HttpStatus.OK);
+        }
+      } else {
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      }
+    }
+  }
 
+  @ResponseBody
+  @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = "application/json")
+  public ResponseEntity<?> createUserProfile(@RequestBody UserProfileResource userProfileResource) {
     UserProfile userProfile = userProfileResourceToDomainConverter.convert(userProfileResource);
-    entityManager.persist(userProfile);
-    HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.setLocation(linkTo(methodOn(UserProfileController.class).getUserProfile(principal,
-      userProfile.getId())).toUri());
-    return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+    if(securityController.getAuthenticatedUserProfileId() != userProfile.getId() ||
+       securityController.getAuthenticatedUserProfileId() == UserProfileResource.ANONYMOUS_USER_PROFILE_ID) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    } else {
+      entityManager.persist(userProfile);
+      HttpHeaders httpHeaders = new HttpHeaders();
+      httpHeaders.setLocation(linkTo(methodOn(UserProfileController.class).getUserProfile(userProfile.getId())).toUri());
+      return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+    }
   }
 
 }

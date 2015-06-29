@@ -47,7 +47,7 @@ public class UserProfileResourceToDomainConverterTest {
         when(entityManager.find(UserProfile.class, 1L)).thenReturn(persistedProfile);
         when(portfolioResourceToDomainConverter.convert(any(PortfolioResource.class))).thenReturn(portfolio);
         UserProfileResource userProfileResource = new UserProfileResource();
-        userProfileResource.add(linkTo(methodOn(UserProfileController.class).getUserProfile(null, 1L)).withSelfRel());
+        userProfileResource.add(linkTo(methodOn(UserProfileController.class).getUserProfile(1L)).withSelfRel());
         userProfileResource.add(linkTo(methodOn(PortfolioController.class).getPortfolio(1L)).withRel("portfolio"));
         UserProfile userProfile = userProfileResourceToDomainConverter.convert(userProfileResource);
         assertThat(userProfile, is(persistedProfile));

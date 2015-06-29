@@ -2,6 +2,7 @@ package com.nicusa.domain;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.UUID;
 
 @Entity
 public class UserProfile {
@@ -18,7 +19,7 @@ public class UserProfile {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  @SequenceGenerator(name = SEQUENCE_NAME, allocationSize = 1)
+  @SequenceGenerator(name = SEQUENCE_NAME, allocationSize = 1, initialValue = 1)
   public Long getId() {
     return id;
   }

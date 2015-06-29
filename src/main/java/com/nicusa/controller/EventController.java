@@ -1,23 +1,22 @@
 package com.nicusa.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.nicusa.service.AdverseEffectService;
 import com.nicusa.util.AdverseEffect;
+import com.nicusa.util.ApiKey;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,27 +24,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class EventController {
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
+
   @Autowired
-  @Value("${api.fda.key:opQssHVEb3CkSrJHxPAJiU1SHgoJPdmLNPUBEbdU}")
-  private String fdaApiKey;
+  ApiKey apiKey;
+  
   @Autowired
   @Value("${fda.drug.event.url:https://api.fda.gov/drug/event.json}")
   private String fdaDrugEventUrl;
 
+  @Autowired
+  AdverseEffectService adverseEffectService;
+
   RestTemplate rest = new RestTemplate();
 
   public Map<String,Long> getEventTerms ( String unii ) throws IOException {
+      apiKey = new ApiKey();
     String query = String.format(
         this.fdaDrugEventUrl + "?search=patient.drug.openfda.unii:%s&count=patient.reaction.reactionmeddrapt.exact",
         URLEncoder.encode( unii, StandardCharsets.UTF_8.name() )) +
-      "&api_key=" +
-      this.fdaApiKey;
+      this.apiKey.getFdaApiKeyQuery();
+
     ObjectMapper mapper = new ObjectMapper();
     JsonNode node = mapper.readTree(
         this.rest.getForObject( query, String.class ));
@@ -60,6 +63,8 @@ public class EventController {
     return rv;
   }
 
+
+  
   @RequestMapping("/event")
   public String search(
       @RequestParam(value="unii", defaultValue="" ) String unii,
@@ -79,28 +84,31 @@ public class EventController {
         max = terms.get( k );
       }
     }
-    
+
     Set<AdverseEffect> effects = new TreeSet<AdverseEffect>();
     for ( String k : terms.keySet() ) {
       AdverseEffect ef = new AdverseEffect();
       ef.setEffect( k );
       ef.setCount( terms.get( k ));
       ef.setTotal( max );
+      ef.setDescription( adverseEffectService.findEffectDescription(k));
       // TODO set description
       effects.add( ef );
     }
-
-    ArrayNode top = mapper.createArrayNode();
+    ObjectNode top = mapper.createObjectNode();
+    top.put( "UNII", unii );
+    ArrayNode array = mapper.createArrayNode();
     int count = 0;
     for ( AdverseEffect ef : effects ) {
       if ( count >= skip ) {
         if ( count == limit + skip ) {
           break;
         }
-        top.add( mapper.valueToTree( ef ));
+        array.add( mapper.valueToTree( ef ));
       }
       count++;
     }
+    top.put( "effect", array );
 
     return mapper.writeValueAsString( top );
   }

@@ -1,0 +1,18 @@
+{{#link-to 'drug.effect' name}}
+  <div class="panel-heading" role="tab" id="{{effect-slug name}}">
+    <h4 class="panel-title">
+      <a class="clearfix" role="button" data-toggle="collapse" data-parent="#effects" data-target="#{{effect-content-slug name}}" aria-expanded="true" aria-controls="collapseOne">
+        <i class="fa fa-chevron-down fa-2x pull-right toggle-icon" data-toggle="tooltip" data-placement="left" title="Click to toggle details."></i>
+        {{easy-pie-chart size=35 dataPercent=percent percentText=" " percentSign=" " barColor="#3366cc" trackColor="#eee" lineWidth="3" animate="1500" scaleLength=0}}
+        <div class="effect-header">
+            {{name}}
+            <span class="count">{{count}} Cases Reported</span>
+            <small class="description">{{description}}</small>
+        </div>
+      </a>
+    </h4>
+  </div>
+{{/link-to}}
+<div id="{{effect-content-slug name}}" class="panel-collapse panel-details collapse" role="tabpanel" aria-labelledby="{{name}}">
+    {{outlet}}
+</div>

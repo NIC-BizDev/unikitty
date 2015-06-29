@@ -1,26 +1,31 @@
 package com.nicusa.controller;
 
-import com.nicusa.util.HttpSlurper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.nicusa.service.AdverseEffectService;
+import com.nicusa.util.ApiKey;
+
+import java.io.IOException;
+import java.util.Map;
 
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.web.client.RestTemplate;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.io.IOException;
-import java.util.Map;
-
 public class EventControllerTest {
-
+    
 
   @Test
   public void testEventTerms () throws IOException {
     EventController event = new EventController();
     event.rest = mock( RestTemplate.class );
+    event.apiKey = new ApiKey();
     final String res = "{\"meta\":{\"disclaimer\":\"openFDA is a beta research project and not for clinical use. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated.\",\"license\":\"http://open.fda.gov/license\",\"last_updated\": \"2015-01-21\"},\"results\":[{\"term\":\"PAIN\",\"count\": 584  },{\"term\": \"DIARRHOEA\",\"count\":543},{\"term\": \"NAUSEA\",\"count\": 481},{\"term\":\"ANXIETY\",\"count\": 417}]}";
     when( event.rest.getForObject(anyString(),(Class<?>)any(Class.class))).thenAnswer(
         new Answer<String>() {
@@ -40,7 +45,11 @@ public class EventControllerTest {
   @Test
   public void testSearch () throws IOException {
     EventController event = new EventController();
+    AdverseEffectService aeService = mock(AdverseEffectService.class);
+    event.adverseEffectService = aeService;
+    when(aeService.findEffectDescription(anyString())).thenReturn("diarrhoea");
     event.rest = mock( RestTemplate.class );
+    event.apiKey = new ApiKey();
     final String res = "{\"meta\":{\"disclaimer\":\"openFDA is a beta research project and not for clinical use. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated.\",\"license\":\"http://open.fda.gov/license\",\"last_updated\": \"2015-01-21\"},\"results\":[{\"term\":\"PAIN\",\"count\": 584  },{\"term\": \"DIARRHOEA\",\"count\":543},{\"term\": \"NAUSEA\",\"count\": 481},{\"term\":\"ANXIETY\",\"count\": 417}]}";
     when( event.rest.getForObject(anyString(),(Class<?>)any(Class.class))).thenAnswer(
         new Answer<String>() {
@@ -55,5 +64,8 @@ public class EventControllerTest {
     assertTrue( results.contains( "DIARRHOEA" ));
     assertTrue( results.contains( "481" ));
     assertTrue( !results.contains( "ANXIETY" ));
+    assertTrue( results.contains( "diarrhoea"));
   }
+  
+  
 }

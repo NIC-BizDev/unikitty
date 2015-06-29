@@ -18,7 +18,7 @@
 					<li><a href="#"><i class="fa fa-sign-out"></i> Log Out</a></li>
 				</ul>
 			{{else}}
-				<button type="button" class="btn btn-primary navbar-btn navbar-right" data-toggle="modal" data-target="#register"><i class="fa fa-facebook-square"></i> Log In with Facebook</button>
+				<button type="button" class="btn btn-fb navbar-btn navbar-right" data-toggle="modal" data-target="#register"><i class="fa fa-facebook-square"></i> Log In with Facebook</button>
 			{{/if}}
 		</div>
 	</div>
@@ -26,16 +26,38 @@
 
 {{outlet}}
 
-<!-- Login Modal -->
-{{partial "login-modal"}}
-
 <!-- Footer -->
 <section id="info" class="section" role="contentinfo">
 	<div class="container">
+		<p class="text-center">Help make MyFDA better by <a href="#">providing feedback</a>.</p>
+		<hr />
 		<div class="row">
-			<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-				<p class="text-muted"><small>MyFDA by NIC, Inc. using OpenFDA</small></p>
+			<div class="col-md-2 col-sm-3 text-center">
+				<div class="center-block"><img src="assets/images/openfda.png" alt="openFDA" class="img-responsive" /></div>
+			</div>
+			<div class="col-md-10 col-sm-9">
+				<p class="credit">openFDA is a beta research project and not for clinical use. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated.</p>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col-md-2 col-sm-3 text-center">
+				<div class="center-block"><img src="assets/images/mw-logo-light-background-125x125.png" alt="Merriam-Webster's Medical&reg; Dictionary" class="img-responsive" /></div>
+			</div>
+			<div class="col-md-10 col-sm-9">
+				<p class="credit">Adverse effect definitions courtesy of Merriam-Webster's Medical<sup>&reg;</sup> Dictionary</p>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col-md-2 col-sm-3 text-center">
+				<div class="center-block"><img src="assets/images/nic.png" alt="NIC, Inc." class="img-responsive" /></div>
+			</div>
+			<div class="col-md-10 col-sm-9">
+				<p class="credit">Prototype made by NIC Technologies</p>
 			</div>
 		</div>
 	</div>
 </section>
+
+<span class="hidden-xs"><a href="https://github.com/NIC-Federal"><img style="position: absolute; top: 70px; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a></span>

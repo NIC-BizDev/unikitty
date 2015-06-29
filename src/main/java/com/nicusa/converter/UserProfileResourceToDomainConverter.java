@@ -29,7 +29,7 @@ public class UserProfileResourceToDomainConverter extends ResourceToDomainConver
   @Override
   public UserProfile convert(UserProfileResource userProfileResource) {
     UserProfile userProfile = entityManager.find(UserProfile.class, extractIdFromLink(UserProfileController.class,
-      userProfileResource, "getUserProfile", Principal.class, Long.class));
+      userProfileResource, "getUserProfile", Long.class));
     if (userProfile == null) {
       userProfile = new UserProfile();
     }

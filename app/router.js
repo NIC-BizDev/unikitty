@@ -8,7 +8,9 @@ var Router = Ember.Router.extend({
 Router.map(function() {
   this.route('dashboard', {path: "/"});
 
-  this.route('drug', {path: "/drug/:drug_id"});
+  this.route('drug', {path: "/drug/:drug_id"}, function() {
+    this.route('effect', {path: ":effect_name"});
+  });
 
   this.route('search', function() {
     this.route('results', {path: ':keyword'});
@@ -17,6 +19,7 @@ Router.map(function() {
     this.route('notifications');
   });
 
+  this.route('style-guide');
 });
 
 export default Router;

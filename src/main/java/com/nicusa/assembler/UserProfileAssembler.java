@@ -21,6 +21,9 @@ public class UserProfileAssembler extends ResourceAssemblerSupport<UserProfile, 
   public UserProfileResource toResource(UserProfile userProfile) {
     UserProfileResource userProfileResource = createResourceWithId(userProfile.getId(), userProfile);
     userProfileResource.setName(userProfile.getName());
+    userProfileResource.setEmailAddress(userProfile.getEmailAddress());
+    userProfileResource.setUserId(userProfile.getUserId());
+    userProfileResource.set_id(userProfile.getId().toString());
     if (userProfile.getPortfolio() != null) {
       userProfileResource.add(linkTo(methodOn(PortfolioController.class).getPortfolio(userProfile.getPortfolio()
         .getId())).withRel("portfolio"));

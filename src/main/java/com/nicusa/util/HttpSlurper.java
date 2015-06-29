@@ -16,26 +16,22 @@ public class HttpSlurper {
     HttpSlurper.class);
 
 
-  public String getData(String query) {
+  public String getData(String query) throws IOException {
     String result = "";
-    try {
-      String charset = StandardCharsets.UTF_8.name();
-      URLConnection conn = new URL(query).openConnection();
-      conn.setRequestProperty("Accept-Charset", charset);
+    String charset = StandardCharsets.UTF_8.name();
+    URLConnection conn = new URL(query).openConnection();
+    conn.setRequestProperty("Accept-Charset", charset);
 
-      BufferedReader in = new BufferedReader(
-        new InputStreamReader(
-          conn.getInputStream(), charset));
+    BufferedReader in = new BufferedReader(
+      new InputStreamReader(
+        conn.getInputStream(), charset));
 
-      StringBuilder sb = new StringBuilder();
-      for (String line; (line = in.readLine()) != null; ) {
-        sb.append(line);
-      }
-      result = sb.toString().trim();
-    } catch (IOException ioe) {
-      log.error("Failed getting data for query: " +
-        query, ioe);
+    StringBuilder sb = new StringBuilder();
+    for (String line; (line = in.readLine()) != null; ) {
+      sb.append(line);
     }
+    result = sb.toString().trim();
+
     return result;
   }
 
