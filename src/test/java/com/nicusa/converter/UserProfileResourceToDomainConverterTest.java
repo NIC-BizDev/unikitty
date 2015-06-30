@@ -41,7 +41,7 @@ public class UserProfileResourceToDomainConverterTest {
 
     @Test
     public void testConvert() {
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
+      RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
         UserProfile persistedProfile = new UserProfile();
         Portfolio portfolio = new Portfolio();
         when(entityManager.find(UserProfile.class, 1L)).thenReturn(persistedProfile);

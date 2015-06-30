@@ -15,6 +15,7 @@ public class UserProfile {
   private String emailAddress;
   private Portfolio portfolio;
   private Collection<NotificationSetting> notificationSettings;
+  private Collection<Vote> votes;
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -65,5 +66,13 @@ public class UserProfile {
 
   public void setNotificationSettings(Collection<NotificationSetting> notificationSettings) {
     this.notificationSettings = notificationSettings;
+  }
+
+  public Collection<Vote> getVotes() {
+    return votes;
+  }
+
+  public void setVotes(Collection<Vote> votes) {
+    this.votes = votes;
   }
 }
