@@ -8,26 +8,23 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,6 +48,15 @@ public class UiApplication {
 
   @Value("${keystore.alias:}")
   private String keystoreAlias;
+  
+  @Value("${http.port:8080}")
+  private Integer httpPort;
+  
+  @Value("${https.redirect.port:}")
+  private Integer httpsRedirectPort;
+  
+  @Value("${https.port:8443}")
+  private Integer httpsPort;
 
 
   public static void main(String[] args) {
@@ -76,6 +82,45 @@ public class UiApplication {
       return DocumentBuilderFactory.newInstance();
   }
   
+  @Bean 
+  public EmbeddedServletContainerFactory servletContainer()
+  {
+      TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory()
+      {
+          @Override
+          protected void postProcessContext(Context context)
+          {
+              if(httpsRedirectPort != null)
+              {
+                  SecurityConstraint securityConstraint = new SecurityConstraint();
+                  securityConstraint.setUserConstraint("CONFIDENTIAL");
+                  SecurityCollection collection = new SecurityCollection();
+                  collection.addPattern("/*");
+                  securityConstraint.addCollection(collection);
+                  context.addConstraint(securityConstraint);
+              }
+          }
+      };
+      if(keystoreFile != null && keystoreFile.length() > 0)
+      {
+          tomcat.addAdditionalTomcatConnectors(createHttpConnector());
+      }
+      return tomcat;
+  }
+      
+  private Connector createHttpConnector() {
+      log.info("httpPort:  "+httpPort);
+      log.info("httpsPort:  "+httpsRedirectPort);
+      
+      Connector connector =
+        new Connector("org.apache.coyote.http11.Http11NioProtocol");
+      connector.setScheme("http");
+      connector.setSecure(false);
+      connector.setPort(httpPort);
+      connector.setRedirectPort(httpsRedirectPort);
+      return connector;
+    }
+  
   @Bean
   public EmbeddedServletContainerCustomizer containerCustomizer() throws FileNotFoundException
   {
@@ -91,9 +136,11 @@ public class UiApplication {
           log.warn("Keystore not defined ");
       }
 
-
-      final TomcatConnectorCustomizer customizer = new SslTomcatConnectionCustomizer(
-              absoluteKeystoreFile, keystorePassword, keystoreType, keystoreAlias);
+      final TomcatConnectorCustomizer httpCustomizer = new HttpTomcatConnectorCustomizer(
+              httpPort, httpsRedirectPort); 
+      
+      final TomcatConnectorCustomizer httpsCustomizer = new SslTomcatConnectionCustomizer(
+              absoluteKeystoreFile, keystorePassword, keystoreType, keystoreAlias, httpsPort);
 
       return new EmbeddedServletContainerCustomizer() {
 
@@ -101,7 +148,8 @@ public class UiApplication {
         public void customize(ConfigurableEmbeddedServletContainer container) {
           if(container instanceof TomcatEmbeddedServletContainerFactory) {
             TomcatEmbeddedServletContainerFactory containerFactory = (TomcatEmbeddedServletContainerFactory) container;
-            containerFactory.addConnectorCustomizers(customizer);
+            containerFactory.addConnectorCustomizers(httpCustomizer);
+            containerFactory.addConnectorCustomizers(httpsCustomizer);
           }
         };
       };
