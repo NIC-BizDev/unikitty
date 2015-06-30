@@ -16,13 +16,15 @@ public class SslTomcatConnectionCustomizer implements TomcatConnectorCustomizer
     private String keystorePassword;
     private String keystoreType;
     private String keystoreAlias;
+    private Integer httpsPort;
 
-    public SslTomcatConnectionCustomizer(String absoluteKeystoreFile, String keystorePassword, String keystoreType, String keystoreAlias)
+    public SslTomcatConnectionCustomizer(String absoluteKeystoreFile, String keystorePassword, String keystoreType, String keystoreAlias, Integer httpsPort)
     {
         this.keystoreFile = absoluteKeystoreFile;
         this.keystorePassword = keystorePassword;
         this.keystoreType = keystoreType;
         this.keystoreAlias = keystoreAlias;
+        this.httpsPort = httpsPort;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class SslTomcatConnectionCustomizer implements TomcatConnectorCustomizer
             try {
                 absoluteKeystoreFile = ResourceUtils.getFile(keystoreFile).getAbsolutePath();
     
-                connector.setPort(8443);
+                connector.setPort(httpsPort);
                 connector.setSecure(true);
                 connector.setScheme("https");
     
