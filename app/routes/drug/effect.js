@@ -32,7 +32,6 @@ export default Ember.Route.extend({
                 result.total = result.male.count + result.female.count;
                 result.male.pct = Math.round((result.male.count / result.total) * 100);
                 result.female.pct = Math.round((result.female.count / result.total) * 100);
-                console.log(result);
                 return result;
             }),
 
