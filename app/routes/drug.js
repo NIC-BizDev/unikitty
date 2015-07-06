@@ -4,6 +4,29 @@ export default Ember.Route.extend({
 
   model: function(params) {
     return Ember.RSVP.hash({
+      genericName: $.getJSON('https://api.fda.gov/drug/label.json?search=openfda.unii:"' + params.drug_id + '"&count=openfda.generic_name.exact')
+        .then(function (data) {
+
+          var max = 0;
+          var name = 'Unknown';
+          $.each(data.results, function (key, value) {
+            if(value.count > max)
+            {
+              max= value.count;
+              name = value.term;
+            }
+          });
+          return name;
+        }),
+        isOtc: $.getJSON('https://api.fda.gov/drug/label.json?search=openfda.unii:"' + params.drug_id + '"&count=openfda.product_type.exact')
+          .then(function (data) {
+
+            var bOtc = false;
+            $.each(data.results, function (key, value) {
+              bOtc = bOtc || (value.term.toUpperCase().indexOf('OTC') > -1);
+            });
+            return bOtc;
+          }),
       effects: $.getJSON("event?unii=" + params.drug_id),
       recalls: $.getJSON("drug/enforcements?unii=" + params.drug_id),
       interactions: $.getJSON('https://rxnav.nlm.nih.gov/REST/rxcui?idtype=UNII_CODE&id=' + params.drug_id).then(function (data) {
@@ -18,22 +41,42 @@ export default Ember.Route.extend({
                 rxnormId: data.userInput.rxcui,
                 interactions: []
             };
-            
-if(data.interactionTypeGroup){
+
+          var toName;
+          var toId;
+          var PromiseMaker = Ember.ObjectProxy.extend(Ember.PromiseProxyMixin);
+
+          if(data.interactionTypeGroup){
             $.each(data.interactionTypeGroup, function (key, value) {
                 $.each(value.interactionType, function (key, value) {
                     $.each(value.interactionPair, function (key, value) {
-                        result.interactions.push({
+                        result.interactions.push( {
                             fromDrug: value.interactionConcept[0].sourceConceptItem.name,
-                            toDrug: value.interactionConcept[1].sourceConceptItem.name,
+                            toDrug: toName = value.interactionConcept[1].sourceConceptItem.name,
                             interaction: value.description,
-                            link: value.interactionConcept[0].sourceConceptItem.url
-                        });
+                            link: value.interactionConcept[0].sourceConceptItem.url,
+                            toDrugId: toId = value.interactionConcept[1].minConceptItem.rxcui,
+                            toDrugNames: PromiseMaker.create({
+                               promise: $.getJSON('https://rxnav.nlm.nih.gov/REST/brands.json?ingredientids=' + toId).then(function (data) {
+                                  var brandNames = [];
+                                  if(data.brandGroup.conceptProperties)
+                                  {
+                                   $.each(data.brandGroup.conceptProperties, function (key, value) {
+                                      brandNames.push(value.name);
+                                   });
+                                   }{
+                                    brandNames.push(toName);
+                                   }
 
+                                   return brandNames;
+                              })
+
+                            })
+                        });
                     });
+                  });
                 });
-            });
-}
+              }
             return result;
 
         })
@@ -42,12 +85,16 @@ if(data.interactionTypeGroup){
   setupController: function(controller, model){
     this._super(controller, model);
 
+    controller.set('model', model);
+
     Ember.run.schedule('afterRender', this, function () {
 
 		let duration = 1500;
 
+    $(".recall").velocity("transition.slideRightIn", {duration: duration / 2, stagger: 200});
 		$('a[data-toggle="tab"]').one('shown.bs.tab', function () {
-			$(".effect").velocity("transition.slideRightIn", {duration: duration / 2, stagger: 200});
+      $(".effect").velocity("transition.slideRightIn", {duration: duration / 2, stagger: 200});
+      $(".interaction").velocity("transition.slideRightIn", {duration: duration / 2, stagger: 200});
 		});
 
 		$('.collapse').on('show.bs.collapse', function(){
@@ -60,6 +107,6 @@ if(data.interactionTypeGroup){
 		$('[data-toggle="tooltip"]').tooltip();
 
     });
-  },
+  }
 
 });

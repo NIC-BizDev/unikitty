@@ -1,18 +1,36 @@
-<h3 class="h2">Adverse Effects</h3>
-<!-- <form role="search">
-    <div class="form-group">
-        <label class="sr-only">Search Effects</label>
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search recalls..." />
-            <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
-            </span>
-        </div>
+<h2>Adverse Effects</h2>
+<p class="lead">Expand an Adverse Effect to see more detail. The severity reflects the outcome of the patient. The patient could have presented multiple Adverse Effects to drive that outcome.</p>
+<div class="form-group">
+    <label>Search Adverse Effects</label>
+    <div class="input-group">
+        {{input type="text" value=effectSearchQuery class="form-control" placeholder="Search adverse effects this drug may cause..." }}
+        <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+        </span>
     </div>
-</form> -->
-<hr />
-<div class="panel-group" id="effects" role="tablist" aria-multiselectable="true">
-    {{#each model.effects.effect as |effect|}}
-        {{effect-accordion name=effect.effect count=effect.count percent=effect.percent description=effect.description}}
-    {{/each}}
 </div>
+{{#if effectSearchQuery}}<h3> Results for: {{effectSearchQuery}}</h3>{{/if}}
+<hr />
+{{#if model.effects.effect}}
+<div class="panel-group" id="effects" role="tablist" aria-multiselectable="true">
+
+    {{#if effectSearchQuery}}
+		{{#if effectSearchResults}}
+		    <!-- There is a match -->
+			{{#each effectSearchResults as |effect|}}
+				{{effect-accordion name=effect.effect count=effect.count percent=effect.percent description=effect.description}}
+			{{/each}}
+		{{else}}
+		  <!-- No results for effect query -->
+			<div class="alert alert-info"><i class="fa fa-exclamation-circle"></i> No adverse effects found for {{effectSearchQuery}}</div>
+		{{/if}}
+	{{else}}
+		<!-- Otherwise, show them all -->
+        {{#each model.effects.effect as |effect|}}
+            {{effect-accordion name=effect.effect count=effect.count percent=effect.percent description=effect.description}}
+        {{/each}}
+	{{/if}}
+</div>
+{{else}}
+	<div class="alert alert-info"><i class="fa fa-exclamation-circle"></i> No adverse effects have been reported for this drug.</div>
+{{/if}}

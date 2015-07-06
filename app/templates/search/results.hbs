@@ -1,38 +1,45 @@
+<section id="page-header" class="section">
+	<div class="container">
+		<h1>
+			{{model.length}} Search Results for {{searchQuery}}
+		</h1>
+	</div>
+</section>
+
 <section id="search-results" class="section">
 	<div class="container">
-		<div class="row">
-			<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-				<div class="page-header" id="search-result-list"><h1>{{searchQuery}} <small>{{model.length}} Search Results</small></h1></div>
-				<!-- Search Results -->
-				{{#each model as |result|}}
-					<div class="drug">
-						<span {{action 'setCurrentDrug' result.brandName result.unii}} >
-							<h3>
-								{{result.brandName}}
-								<small>({{result.genericName}})</small>
-							</h3>
-						</span>
-						<p class="active-ingredients"><strong class="prepend">Active Ingredient(s):</strong>
-							{{#each result.activeIngredients as |ingredient|}}
-								<span class="active-ingredient">{{ingredient}}</span>
-							{{/each}}
-						</p>
-						<p>
-							<div class="btn btn-default" {{action 'setCurrentDrug' result.brandName result.unii}}>
-								<i class="fa fa-info-circle"></i> Learn More
+		{{#if model}}
+			<!-- Search Results -->
+			{{#each model as |result|}}
+				<div class="drug">
+					<span {{action 'setCurrentDrug' result.brandName result.unii}} >
+						<h3>
+							{{result.brandName}}
+							<small>({{result.genericName}})</small>
+						</h3>
+					</span>
+					<p class="active-ingredients"><strong class="prepend">Active Ingredient(s):</strong>
+						{{#each result.activeIngredients as |ingredient|}}
+							<span class="active-ingredient">{{ingredient}}</span>
+						{{/each}}
+					</p>
+					<p>
+						<div class="btn btn-default" {{action 'setCurrentDrug' result.brandName result.unii}}>
+							<i class="fa fa-info-circle"></i> Learn More
+						</div>
+						{{#unless UserData.anonymous}}
+						<!-- If user is signed in, present Save to My Meds Button -->
+							<div class="btn btn-default" data-drug-name={{result.brandName}} {{action 'saveDrugToPortfolio' result.unii result.brandName UserData.links.portfolio}}>
+								<i class="fa fa-bookmark"></i> Add to MyMEDS
 							</div>
-							{{#unless UserData.anonymous}}
-							<!-- If user is signed in, present Save to My Meds Button -->
-								<div class="btn btn-default" data-drug-name={{result.brandName}} {{action 'saveDrugToPortfolio' result.unii result.brandName UserData.links.portfolio}}>
-									<i class="fa fa-bookmark"></i> Add to MyMEDS
-								</div>
-							{{/unless}}
-						</p>
-						<hr />
-					</div>
-				{{/each}}
-
-			</div>
-		</div>
+						{{/unless}}
+					</p>
+					<hr />
+				</div>
+			{{/each}}
+		{{else}}
+		  <p class="lead"><i class="fa fa-exclamation-circle"></i> No results found for {{searchQuery}}. Please check your spelling or try again at a later date.</p>
+			<div class="alert alert-info"><strong>Note:</strong> OpenFDA has not yet indexed all known drugs &mdash; the drug you are looking for may be added at a later date.</div>
+		{{/if}}
 	</div>
 </section>

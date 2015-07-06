@@ -1,11 +1,67 @@
-<h3 class="h2">Drug Interactions</h3>
+<h2>Drug Interactions</h2>
+<p class="lead">Drug interactions are tracked by active ingredient. The name to the left of the arrow is an ingredient contained in this drug. The name on the right indicates what drug this ingredient interacts with.</p>
+<div class="form-group">
+	<label>Search Drug Interactions</label>
+	<div class="input-group">
+		{{input value=interactionSearchQuery type="text" class="form-control" placeholder="Find interactions by ingredient or brand name..." }}
+		<span class="input-group-btn">
+			<button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+		</span>
+	</div>
+</div>
+{{#if interactionSearchQuery}}<h3>Results for: {{interactionSearchQuery}}</h3>{{/if}}
+<hr />
+<!-- Show Interactions -->
 {{#if model.interactions.interactions}}
-	{{#each model.interactions.interactions as |interaction|}}
-		<hr />
-		<h4 class="h3">{{interaction.fromDrug}} <i class="fa fa-random text-danger"></i> {{interaction.toDrug}}</h4>
-		<p class="lead">{{interaction.interaction}}</p>
-		<p><a href="{{interaction.link}}" target="_blank" class="btn btn-default"><i class="fa fa-external-link"></i> More Info</a></p>
-	{{/each}}
+	<!-- If user is searching show the results -->
+	{{#if interactionSearchQuery}}
+		<!-- There is a match -->
+		{{#if interactionSearchResults}}
+			{{#each interactionSearchResults as |searchResult|}}
+				<div class="interaction">
+					<h4>{{searchResult.fromDrug}} <i class="fa fa-random text-danger"></i> {{searchResult.toDrug}}</h4>
+					<p>{{searchResult.interaction}}</p>
+					<h5>Brand Name Drugs Containing {{searchResult.toDrug}}:</h5>
+					<div class="columns">
+						<ul>
+			        {{#if searchResult.toDrugNames.isPending}}
+			            Loading...
+			        {{else}}
+			          {{#each searchResult.toDrugNames.content as |brandName|}}
+			            <li>{{brandName}}</li>
+			          {{/each}}
+			        {{/if}}
+						</ul>
+					</div>
+					<hr />
+				</div>
+			{{/each}}
+		{{else}}
+			<!-- No results for interaction query -->
+			<div class="alert alert-info"><i class="fa fa-exclamation-circle"></i> No interactions found for {{interactionSearchQuery}}</div>
+		{{/if}}
+	{{else}}
+		<!-- Otherwise, show them all -->
+		{{#each model.interactions.interactions as |interaction|}}
+			<div class="interaction">
+				<h4>{{interaction.fromDrug}} <i class="fa fa-random text-danger"></i> {{interaction.toDrug}}</h4>
+				<p>{{interaction.interaction}}</p>
+				<h5>Brand Name Drugs Containing {{interaction.toDrug}}:</h5>
+				<div class="columns">
+					<ul>
+		        {{#if interaction.toDrugNames.isPending}}
+		            Loading...
+		        {{else}}
+		          {{#each interaction.toDrugNames.content as |brandName|}}
+		            <li>{{brandName}}</li>
+		          {{/each}}
+		        {{/if}}
+					</ul>
+				</div>
+				<hr />
+			</div>
+		{{/each}}
+	{{/if}}
 {{else}}
-	<p class="lead">No interactions have been reported for this drug.</p>
+	<div class="alert alert-info"><i class="fa fa-exclamation-circle"></i> No interactions have been reported for this drug.</div>
 {{/if}}

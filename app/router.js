@@ -20,6 +20,7 @@ Router.map(function() {
   });
 
   this.route('style-guide');
+  this.route('about-myfda');
 });
 
 Router.reopen({
